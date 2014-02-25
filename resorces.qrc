@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>default.css</file>
+        <file>colors.csv</file>
+    </qresource>
+</RCC>

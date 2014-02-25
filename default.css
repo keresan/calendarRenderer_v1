@@ -1,0 +1,91 @@
+table {	
+	border-style: solid;
+	border-width: 3px;
+	border-color: black;
+	border-collapse:collapse;
+	table-layout: fixed;
+
+	}
+	
+table td {
+	border-width: 1px;
+	border-style: solid;
+	border-color: black;
+	font-family: Verdana, Geneva, sans-serif;
+	white-space: nowrap;
+	}
+
+.day_number {
+	font-size: small;
+	text-align:center;
+	color: black;
+}
+	
+.event_day {
+	font-size: normal;
+	text-align: center;
+	color: black;
+}
+
+.serial_number {
+	padding-right: 1mm;
+}
+	
+.room_day {
+	background-color: orange;
+	}
+
+.event_title, .room_title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.non_work_day {
+	overflow: hidden;
+	background-color: #C8C8C8;
+	width: 1mm;
+}
+
+.month_title {
+	font-size: normal;
+	text-align:center;
+	color: black;
+	}
+
+.calendar_title {
+	font-size: large;
+	text-align: center;
+	font-weight: bold;
+	padding: 2mm;
+
+	}
+.tr_highlight {
+	border-width: 0px 0px 2px 0px;
+	border-color: black;
+	border-style: solid;
+}
+
+.tr_end {
+	border-width: 0px 0px 3px 0px;
+	border-color: black;
+	border-style: solid;
+}
+
+.group_title {
+	text-align: center;
+	font-weight: bold;
+	padding: 1mm;
+	overflow: hidden;
+}
+
+.workActivity_cell {
+	text-align: center;
+	/*background-color: yellow; len defaultna hodnota*/
+}
+
+.department_number {
+	max-width: 10mm;
+	padding-left: 1mm;
+	padding-right: 1mm;
+}
+

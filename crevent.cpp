@@ -178,6 +178,12 @@ Qt::DayOfWeek CrEvent::convertToQtDayOfWeek(CrEvent::DayOfWeek day) {
     return returnDay;
 }
 
+/**
+ * @brief CrEvent::lessThanCourseType - radenie v podla eventType, titleId, dateBegin
+ * @param e1
+ * @param e2
+ * @return
+ */
 bool CrEvent::lessThanCourseType(CrEvent &e1, CrEvent &e2) {
     //compare byt courseType
     if (e1.eventType() < e2.eventType()) {
@@ -198,4 +204,13 @@ bool CrEvent::lessThanCourseType(CrEvent &e1, CrEvent &e2) {
     }
 
     return false;
+}
+
+bool CrEvent::lessThenDateBegin(CrEvent &e1, CrEvent &e2) {
+	//compare by date begin
+	if(e1.dateBegin() < e2.dateBegin()) {
+		return true;
+	} else {
+		return false;
+	}
 }

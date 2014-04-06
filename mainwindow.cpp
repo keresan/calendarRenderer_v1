@@ -267,10 +267,11 @@ void MainWindow::openHandler() {
     connect(_calendar, SIGNAL(signalErrorMsg(QString)), this, SLOT(errorMsgHandler(QString)));
 
 
-    //QString xmlFilePath = QFileDialog::getOpenFileName(this,"open xml file",QString(),"xml file(*.xml)");
-    //QString xmlFilePath = "/Users/martin/Documents/[] sklad/calendar renderer data/EBO_2Q2014_D1_vypis_vsetky_skolenia.xml";
-    QString xmlFilePath = "/Users/martin/Documents/[] sklad/calendar renderer data/Dotaz_Vyber_2014_Q2+ZAMOK zamknuty.xml";
-    //QString xmlFilePath = "/Users/martin/Documents/[] sklad/calendar renderer data/3_EMO1a2Q2014_D1_vypis_vsetky_skolenia.xml";
+	//QString xmlFilePath = QFileDialog::getOpenFileName(this,"open xml file",QString(),"xml file(*.xml)");
+	 QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/problem1/?Q?Q3=5Fstav_k_1=5F4=5F2014.xml";
+	//QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/EBO_2Q2014_D1_vypis_vsetky_skolenia.xml";
+	//QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/Dotaz_Vyber_2014_Q2+ZAMOK zamknuty.xml";
+	//QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/3_EMO1a2Q2014_D1_vypis_vsetky_skolenia.xml";
 
 
     //QString xmlFilePath = "/Users/martin/Documents/[] sklad/calendar renderer data/in_1.xml";
@@ -312,9 +313,10 @@ void MainWindow::saveHandler() {
     _calendar->setCss(cssFile + eventTitleWidth);
     _calendar->generateCalendar(getTitle(), _checkEvent->isChecked(), _checkRoom->isChecked(), _checkCoach->isChecked());
 
-    //QString filename = QFileDialog::getSaveFileName(this,"save html page",QString(), "html (*.html)");
+
+	//QString filename = QFileDialog::getSaveFileName(this,"save html page",QString(), "html (*.html)");
     //QString filename = "/Users/martin/Documents/calRenderer_01.pdf";
-    QString filename = "/Users/martin/Documents/[] sklad/calendar renderer data/page_1_13.html";
+	QString filename = "/Users/martin/Documents/[]sklad/calendar renderer data/page_1_13.html";
 
     QFile file(filename);
     file.open(QIODevice::WriteOnly | QIODevice::Text);

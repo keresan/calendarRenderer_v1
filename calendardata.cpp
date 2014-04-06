@@ -131,8 +131,28 @@ listOfListOfEvents CalendarData::createCompressedEventList(QList<CrEvent> &list)
  */
 void CalendarData::createCompressedWorkActivityList(QList<CrEvent> &list) {
 
+
+	qDebug() << "unsorted list:";
+	for(int i=0; i < list.count(); i++) {
+		qDebug("%20s %6d %10s  %10s",
+			   list[i].title().toStdString().c_str(),
+			   list[i].titleId(),
+			   list[i].dateBegin().toString("dd.MMM").toStdString().c_str(),
+			   list[i].dateEnd().toString("dd.MMM").toStdString().c_str());
+	}
+
     //sort it
-    sortList(list);
+	sortList(list,true);
+
+	qDebug() << "sorted list:";
+	for(int i=0; i < list.count(); i++) {
+		qDebug("%20s %6d %10s  %10s",
+			   list[i].title().toStdString().c_str(),
+			   list[i].titleId(),
+			   list[i].dateBegin().toString("dd.MMM").toStdString().c_str(),
+			   list[i].dateEnd().toString("dd.MMM").toStdString().c_str());
+	}
+
 
     //create compressed list
     QList<CrEvent>::iterator eventIterator;
@@ -146,8 +166,12 @@ void CalendarData::createCompressedWorkActivityList(QList<CrEvent> &list) {
  * sort
  ***********************************************/
 
-void CalendarData::sortList(QList<CrEvent> &list) {
-    qSort(list.begin(), list.end(), CrEvent::lessThanCourseType);
+void CalendarData::sortList(QList<CrEvent> &list, bool sortOnlyByDate) {
+	if(sortOnlyByDate) {
+		qSort(list.begin(), list.end(), CrEvent::lessThenDateBegin);
+	} else {
+		qSort(list.begin(), list.end(), CrEvent::lessThanCourseType);
+	}
 }
 
 
@@ -182,6 +206,18 @@ void CalendarData::printCompressedList() {
         }
         qDebug("-next:");
     }
+}
+
+void CalendarData::printCompressedList(listOfListOfEvents &list) {
+	listOfListOfEvents::iterator listOfListIterator;
+	QList<CrEvent>::iterator eventIterator;
+
+	for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
+		for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
+			qDebug("%20s %6d %10s  %10s %6d", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str(), eventIterator->roomId());
+		}
+		qDebug("-next:");
+	}
 }
 
 void CalendarData::printRoom(int id) {

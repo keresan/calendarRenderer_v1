@@ -353,6 +353,9 @@ bool CrCalendar::readXmlFile(QString path) {
     _calendarData._listOfEventsAfterDeadline = CalendarData::createCompressedEventList(listEventsAfterDeadline);
     _calendarData.createCompressedWorkActivityList(listWorkAction);
 
+	qDebug() << "list of work actions:";
+	_calendarData.printCompressedList(_calendarData._listOfWorkAction);
+
     return result;
 
 }
@@ -446,6 +449,9 @@ void CrCalendar::generateCalendar(QString title, bool genEvent, bool genRoom, bo
     _html += "</body>\n";
     _html += "</html>\n";
 
+
+
+
 }
 
 QString CrCalendar::generateMonthTitle() {
@@ -537,6 +543,7 @@ QString CrCalendar::generateWorkActivity() {
         int colspan = 0;
         for(dayIterator = _dateFirst; dayIterator <= _dateLast; dayIterator = dayIterator.addDays(1)) {
 
+			//qDebug() << QString("%1: %2").arg(eventIterator->title()).arg(eventIterator->dateBegin().toString("dd.MM.yyyy"));
 
             if( eventIterator != listOfListIterator->end()
                     && dayIterator >= eventIterator->dateBegin()
@@ -569,9 +576,7 @@ QString CrCalendar::generateWorkActivity() {
                 returnStr += "<td ";
                 returnStr += cell.getCssClasses();
                 returnStr += "></td>\n";
-
             }
-
         }
         returnStr += "</tr>";
 

@@ -77,6 +77,7 @@ public:
     CrEvent::DayOfWeek convertFromQtDayOfWeek(Qt::DayOfWeek day);
 
     static bool lessThanCourseType(CrEvent &e1, CrEvent &e2);
+	static bool lessThenDateBegin(CrEvent &e1, CrEvent &e2);
 
     QList<QDate> getEventDays();
     QString getClassNameOfId();
@@ -85,7 +86,7 @@ private:
     QDate _dateBegin;
     QDate _dateEnd; //pre zistenie, ci sa 2 udalosti casovo prekryvaju
     int _duration;
-    int _hours; //trvanie vhodinach, dolezite, ak event trva 1 den a menej ako 8h
+	int _hours; //trvanie v hodinach, dolezite, ak event trva 1 den a menej ako 8h
     int _id;
     int _priority; // pre rozlisenie inych aktivit, napr. generalna oprava - najvyssia priorita
     QString _title;

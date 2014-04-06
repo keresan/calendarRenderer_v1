@@ -37,8 +37,11 @@ public:
     static void clearData();
 
     //print
-    void printCompressedList();
+	void printCompressedList();
+	void printCompressedList(listOfListOfEvents &list);
     void printRoom(int id);
+
+
 
 
 
@@ -49,7 +52,7 @@ private:
     static bool canAdd(CrEvent &event, QList<CrEvent> &list);
     static void add(CrEvent &event, QList<QList<CrEvent> > &list);
 
-    static void sortList(QList<CrEvent> &list);
+	static void sortList(QList<CrEvent> &list, bool sortOnlyByDate = false);
 
     static bool LessThanDate(QList<CrEvent> &list1, QList<CrEvent> &list2);
 

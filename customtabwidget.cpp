@@ -3,8 +3,6 @@
 CustomTabWidget::CustomTabWidget(QWidget *parent): QTabWidget(parent) {
 
     initTableEvent();
-    initTableRoom();
-    initTableCoach();
 
    // qDebug() << "CustomTabWidget(): size" << _tableEvent->horizontalHeader()->size();
     qDebug() << "CustomTabWidget(): horizontalHeader" << _tableEvent->horizontalHeader()->width();
@@ -22,11 +20,7 @@ CustomTabWidget::CustomTabWidget(QWidget *parent): QTabWidget(parent) {
     //_tableEvent->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     qDebug() << "CustomTabWidget(): _tableEvent sizeHint" <<_tableEvent->sizeHint();
-    qDebug() << "CustomTabWidget(): _tableEvent size" <<_tableEvent->size();
-    qDebug() << "CustomTabWidget(): _tableRoom size" <<_tableRoom->size();
-    qDebug() << "CustomTabWidget(): _tableCoach size" <<_tableCoach->size();
-
-
+	qDebug() << "CustomTabWidget(): _tableEvent size" <<_tableEvent->size();
 
 
 }
@@ -38,57 +32,32 @@ void CustomTabWidget::initTableEvent() {
 
     rowCaptions.append("farba");
     rowCaptions.append("názov školenia");
-    //rowCaptions.append("miestnost");
-    //rowCaptions.append("skolitel");
 
     _tableEvent = new CrTableWidget(rowCaptions);
     _tableEvent->setColumnWidth(0,150);
     _tableEvent->setColumnWidth(1,100);
 
-
-
     this->addTab(_tableEvent, "školenia");
 }
 
-void CustomTabWidget::initTableRoom() {
-
-    QStringList rowCaptions;
-    rowCaptions.append("farba");
-    rowCaptions.append("školiaca miestnosť");
-
-    _tableRoom = new CrTableWidget(rowCaptions);
-    _tableRoom->setColumnWidth(0,150);
-    _tableRoom->setColumnWidth(1,100);
-
-    this->addTab(_tableRoom, "miestnosti");
-}
-
-void CustomTabWidget::initTableCoach() {
-
-    QStringList rowCaptions;
-
-    rowCaptions.append("farba");
-    rowCaptions.append("meno inštruktora");
-
-    _tableCoach = new CrTableWidget(rowCaptions);
-    _tableCoach->setColumnWidth(0,150);
-    _tableCoach->setColumnWidth(1,100);
-    this->addTab(_tableCoach, "inštruktori");
-}
-
 void CustomTabWidget::loadEvents() {
-    _eventCounter = 0;
+
+	int counter = 0;
     _tableEvent->setRowCount(0);
 
-    loadEventsFromList(_calendarData._listOfEvents);
+	loadEventsFromList(_calendarData._listOfEvents,counter);
 
-    _startRowEventAfterDeadline = _eventCounter;
+	_startRowEventAfterDeadline = counter;
+	loadEventsFromList(_calendarData._listOfEventsAfterDeadline,counter);
 
-    loadEventsFromList(_calendarData._listOfEventsAfterDeadline);
+	_startRowSoftSkill = counter;
+	loadEventsFromList(_calendarData._listOfSoftskill,counter);
 
+	_startRowSoftSkillAfterDeadline = counter;
+	loadEventsFromList(_calendarData._listOfSoftskillAfterDeadline,counter);
 }
 
-void CustomTabWidget::loadEventsFromList(listOfListOfEvents &list) {
+void CustomTabWidget::loadEventsFromList(listOfListOfEvents &list, int &counter) {
     listOfListOfEvents::iterator listOfListIterator;
 
     //int row = 0;
@@ -100,65 +69,23 @@ void CustomTabWidget::loadEventsFromList(listOfListOfEvents &list) {
     for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
 
         //row number
-        _tableEvent->setVerticalHeaderItem(_eventCounter, new QTableWidgetItem(QString::number(_eventCounter+1)));
+		_tableEvent->setVerticalHeaderItem(counter, new QTableWidgetItem(QString::number(counter+1)));
 
         //color
-        QTableWidgetItem *newItem = new QTableWidgetItem(listOfListIterator->first().color().name());
-        newItem->setBackgroundColor(listOfListIterator->first().color());
+		QTableWidgetItem *newItem = new QTableWidgetItem(listOfListIterator->first().colorDay().name());
+		newItem->setBackgroundColor(listOfListIterator->first().colorDay());
         newItem->setTextAlignment(Qt::AlignCenter);
         newItem->setFlags( Qt::ItemIsEnabled);
-        _tableEvent->setItem(_eventCounter, 0, newItem);
+		_tableEvent->setItem(counter, 0, newItem);
 
         //title
         newItem = new QTableWidgetItem(listOfListIterator->first().title());
         newItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         newItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-        _tableEvent->setItem(_eventCounter, 1, newItem);
-        _eventCounter++;
+		_tableEvent->setItem(counter, 1, newItem);
+		counter++;
     }
 
-
-}
-
-void CustomTabWidget::loadRooms(CalendarData::RoomOrCoach what) {
-    trainingRoomMap roomsMap;
-    CrTableWidget *table;
-
-    if(what == CalendarData::room) {
-        roomsMap = _calendarData._trainingRooms;
-        table = _tableRoom;
-    } else if(what == CalendarData::coach) {
-        roomsMap = _calendarData._trainingCoach;
-        table = _tableCoach;
-    } else {
-        assert(false);
-    }
-
-    trainingRoomMap::iterator roomIterator;
-    int row = 0;
-
-    //rows count
-    table->setRowCount(roomsMap.count());
-
-    for(roomIterator = roomsMap.begin(); roomIterator != roomsMap.end(); ++roomIterator) {
-        //row number
-        table->setVerticalHeaderItem(row, new QTableWidgetItem(QString::number(row+1)));
-
-        //color
-        QTableWidgetItem *newItem = new QTableWidgetItem(roomIterator->color().name());
-        newItem->setBackgroundColor(roomIterator->color());
-        newItem->setTextAlignment(Qt::AlignCenter);
-        newItem->setFlags( Qt::ItemIsEnabled);
-        table->setItem(row, 0, newItem);
-
-        //title
-        newItem = new QTableWidgetItem(roomIterator->title());
-        newItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        newItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-        table->setItem(row, 1, newItem);
-
-        row++;
-    }
 
 }
 
@@ -174,13 +101,18 @@ void CustomTabWidget::selectedEventHandler(QColor *color) {
 }
 
 int CustomTabWidget::mapTableRowToEventLine(int tableRow) {
-   //zatial len tak, bude treba prerobit ked sa prida vypis pracovnych aktivit
 
-    if(tableRow < _startRowEventAfterDeadline) {
-        return tableRow;
-    } else {
-        return tableRow - _startRowEventAfterDeadline;
-    }
+
+
+	if(tableRow < _startRowEventAfterDeadline) {
+		return tableRow;
+	} else if(tableRow >= _startRowEventAfterDeadline && tableRow < _startRowSoftSkill) {
+		return tableRow - _startRowEventAfterDeadline;
+	} else if(tableRow >= _startRowSoftSkill && tableRow < _startRowSoftSkillAfterDeadline) {
+		return tableRow - _startRowSoftSkill;
+	} else {
+		return tableRow - _startRowSoftSkillAfterDeadline;
+	}
 }
 
 QColor CustomTabWidget::getCurrentRowColor() {
@@ -208,18 +140,23 @@ void CustomTabWidget::setCurrentRowColor(QColor color) {
     table->item(row,0)->setText(color.name());
 
     //change color in calendar data
+	int tableRow;
     if(table == _tableEvent) {
         if(row < _startRowEventAfterDeadline) {
-            changeLineEventColor(_calendarData._listOfEvents, mapTableRowToEventLine(row), color);
-        } else {
-            changeLineEventColor(_calendarData._listOfEventsAfterDeadline, mapTableRowToEventLine(row), color);
-        }
+			tableRow = row;
+			changeLineEventColor(_calendarData._listOfEvents, tableRow, color);
+		} else if(row >= _startRowEventAfterDeadline && row < _startRowSoftSkill) {
+			tableRow = row - _startRowEventAfterDeadline;
+			changeLineEventColor(_calendarData._listOfEventsAfterDeadline, tableRow, color);
+		} else if(row >= _startRowSoftSkill && row < _startRowSoftSkillAfterDeadline) {
+			tableRow = row - _startRowSoftSkill;
+			changeLineEventColor(_calendarData._listOfSoftskill, tableRow, color);
+		} else {
+			tableRow = row  - _startRowSoftSkillAfterDeadline;
+			changeLineEventColor(_calendarData._listOfSoftskillAfterDeadline, tableRow, color);
+		}
 
-    } else if(table == _tableRoom) {
-        changeRoomColor(row, color, CalendarData::room);
-    } else if(table == _tableCoach) {
-        changeRoomColor(row, color, CalendarData::coach);
-    }
+	}
 }
 
 void CustomTabWidget::changeLineEventColor(listOfListOfEvents &list, int index, QColor color) {
@@ -232,15 +169,15 @@ void CustomTabWidget::changeLineEventColor(listOfListOfEvents &list, int index, 
     }
 }
 
-void CustomTabWidget::changeRoomColor(int index, QColor color, CalendarData::RoomOrCoach what) {
+void CustomTabWidget::changeRoomColor(int index, QColor color, CalendarData::RoomOrInstructor what) {
     trainingRoomMap *trainingSet;
 
     if(what == CalendarData::room) {
         trainingSet = &_calendarData._trainingRooms;
         qDebug() << "room";
-    } else if(what == CalendarData::coach) {
-        trainingSet = &_calendarData._trainingCoach;
-        qDebug() << "coach";
+	} else if(what == CalendarData::instructor) {
+		trainingSet = &_calendarData._trainingInstructor;
+		qDebug() << "instructor";
     } else {
         assert(false);
     }
@@ -251,7 +188,7 @@ void CustomTabWidget::changeRoomColor(int index, QColor color, CalendarData::Roo
     for(roomIterator = trainingSet->begin(); roomIterator != trainingSet->end(); ++roomIterator) {
 
         if(row == index) {
-            roomIterator->setColor(color);
+			//roomIterator->setColor(color);
             qDebug() << "zmeneny index=" << index;
             break;
         }
@@ -261,24 +198,17 @@ void CustomTabWidget::changeRoomColor(int index, QColor color, CalendarData::Roo
 
 void CustomTabWidget::clearTables() {
 
-    delete _tableCoach;
-    delete _tableEvent;
-    delete _tableRoom;
+	delete _tableEvent;
 
     initTableEvent();
-    initTableRoom();
-    initTableCoach();
 }
 
 void CustomTabWidget::loadData() {
-    this->loadEvents();
-    this->loadRooms(CalendarData::room);
-    this->loadRooms(CalendarData::coach);
+    this->loadEvents();	
 }
 
-
 bool CustomTabWidget::isActiveRow() {
-    if(_tableCoach->currentRow() < 0 && _tableEvent->currentRow() < 0 && _tableRoom->currentRow() < 0) {
+	if(_tableEvent->currentRow() < 0) {
         return false;
     }
     return true;

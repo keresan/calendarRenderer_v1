@@ -5,10 +5,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    initDock();
 
+	Settings::setConstants();
 
-    initTable();
+	initDock();
+
+	initTable();
 
     _logConsole = new LogWindow();
 
@@ -18,35 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     _colorDialog = new ColorDialog();
     _colorDialog->hide();
 
-
-    //connect(_btnColor,SIGNAL(clicked()), _tab, SLOT(selectedEventHandler()));
-   // connect(this, SIGNAL(currentColor(QColor *color)), _tab, SLOT(selectedEventHandler(QColor *color)));
-    connect(_btnColor, SIGNAL(clicked()), this, SLOT(btnColorHandler()));
-
+	connect(_btnColor, SIGNAL(clicked()), this, SLOT(btnColorHandler()));
     connect(_comboQuartals,SIGNAL(currentIndexChanged(int)), this, SLOT(comboQuartalsHandler(int)));
-
-    connect(_colorDialog, SIGNAL(newColor(QColor)), this, SLOT(newColorHandler(QColor)));
-
-
-    /*
-    QTextDocument doc;
-    doc.setDefaultStyleSheet(cssFile);
-
-    //doc.setHtml("<html><head></head><body><table><tr><td>1</td><td>2</td></tr></table></body></html>");
-    doc.setHtml(_calendar->getHtml());
-
-    QPrinter printer;
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(filename);
-    printer.setPaperSize(QPrinter::A2);
-    printer.setOrientation(QPrinter::Landscape);
-
-    doc.print(&printer);
-
-    printer.newPage();
-
-    qDebug() << "done";
-    */
+	connect(_colorDialog, SIGNAL(newColor(QColor)), this, SLOT(newColorHandler(QColor)));
 
 }
 
@@ -118,11 +94,8 @@ void MainWindow::initDock() {
     _boxDate = new QGroupBox("dátum");
     _boxDate->setLayout(_gridLayoutDate);
 
-
-
-
     //title edit
-    _lineTitle = new QLineEdit("PLÁN ŠKOLENÍ",this);
+	_lineTitle = new QLineEdit(Settings::calendarTitleLabel,this);
     _lineTitle->setStyleSheet("padding-top: 3px; padding-bottom: 1px");
     _checkTitleDate = new QCheckBox("pridať dátum",this);
     _checkTitleDate->setChecked(true);
@@ -135,7 +108,7 @@ void MainWindow::initDock() {
 
     // event title width
     _spinWidth = new QDoubleSpinBox(this);
-    _spinWidth->setValue(10.0);
+	_spinWidth->setValue(Settings::widthEventTitle);
     _spinWidth->setDecimals(1);
     _spinWidth->setMinimum(5.0);
     _spinWidth->setMaximum(99.0);
@@ -159,20 +132,49 @@ void MainWindow::initDock() {
     _boxWidth->setLayout(_gridLayoutWidth);
 
     //checkboxes
-    _checkEvent = new QCheckBox("školenia",this);
-    _checkRoom = new QCheckBox("miestnosti",this);
-    _checkCoach = new QCheckBox("inštruktori",this);
+	_checkEvent = new QCheckBox("",this);
+	_checkSoftskill = new QCheckBox("",this);
+	_checkRoom = new QCheckBox("",this);
+	_checkInstructor = new QCheckBox("",this);
 
-    _checkEvent->setChecked(true);
-    _checkRoom->setChecked(true);
-    _checkCoach->setChecked(true);
+	_checkEvent->setChecked(Settings::generateEvent);
+	_checkSoftskill->setChecked(Settings::generateSoftskill);
+	_checkRoom->setChecked(Settings::generateRoom);
+	_checkInstructor->setChecked(Settings::generateInstructor);
+
+	setExportCheckboxiesEnable(true);
+
+	_lineEventLabel = new QLineEdit(Settings::eventLabel, this);
+	_lineEventAfterDeadlineLabel = new QLineEdit(Settings::eventAfterDeadlineLabel,this);
+	_lineSoftskillLabel = new QLineEdit(Settings::softSkillLabel, this);
+	_lineSoftskillAfterDeadlineLabel = new QLineEdit(Settings::softSkillAfterDeadlineLabel,this);
+	_lineRoomLabel = new QLineEdit(Settings::roomLabel, this);
+	_lineInstructorLabel = new QLineEdit(Settings::instructorLabel, this);
+
+	//ak je text dlhsi ako sirka editu
+	_lineEventLabel->setCursorPosition(0);
+	_lineEventAfterDeadlineLabel->setCursorPosition(0);
+	_lineSoftskillLabel->setCursorPosition(0);
+	_lineSoftskillAfterDeadlineLabel->setCursorPosition(0);
+	_lineRoomLabel->setCursorPosition(0);
+	_lineInstructorLabel->setCursorPosition(0);
+
 
     _boxExport = new QGroupBox("export",this);
 
     _gridLayoutOption = new QGridLayout;
-    _gridLayoutOption->addWidget(_checkEvent);
-    _gridLayoutOption->addWidget(_checkRoom);
-    _gridLayoutOption->addWidget(_checkCoach);
+	_gridLayoutOption->addWidget(_checkEvent,0,0);
+	_gridLayoutOption->addWidget(_lineEventLabel,0,1);
+	_gridLayoutOption->addWidget(_lineEventAfterDeadlineLabel,1,1);
+
+	_gridLayoutOption->addWidget(_checkSoftskill,2,0);
+	_gridLayoutOption->addWidget(_lineSoftskillLabel,2,1);
+	_gridLayoutOption->addWidget(_lineSoftskillAfterDeadlineLabel,3,1);
+
+	_gridLayoutOption->addWidget(_checkRoom,4,0);
+	_gridLayoutOption->addWidget(_lineRoomLabel,4,1);
+	_gridLayoutOption->addWidget(_checkInstructor,5,0);
+	_gridLayoutOption->addWidget(_lineInstructorLabel,5,1);
     _boxExport->setLayout(_gridLayoutOption);
 
     //space
@@ -182,22 +184,22 @@ void MainWindow::initDock() {
     _gridLayout = new QGridLayout;
 
     _gridLayout->addWidget(_labTitle,0,0,1,2);
-    _gridLayout->addWidget(_btnOpenFile,1,0,1,2);
-    _gridLayout->addWidget(_boxDate,2,0,1,2);
 
+	_gridLayout->addWidget(_boxExport,1,0,6,2);
 
-    _gridLayout->addWidget(_boxTitle,3,0,2,2);
+	_gridLayout->addWidget(_btnOpenFile,7,0,1,2);
+	_gridLayout->addWidget(_boxDate,8,0,2,2);
 
-    _gridLayout->addWidget(_boxWidth,5,0,1,2);
+	_gridLayout->addWidget(_boxTitle,10,0,2,2);
 
-    _gridLayout->addWidget(_btnError,6,0);
-    _gridLayout->addWidget(_btnColor,7,0);
+	_gridLayout->addWidget(_boxWidth,12,0,1,2);
 
-    _gridLayout->addWidget(_boxExport,6,1,3,1);
+	_gridLayout->addWidget(_btnColor,13,0);
+	_gridLayout->addWidget(_btnError,13,1);
 
-    _gridLayout->addWidget(_btnSaveFile,10,0,1,2);
+	_gridLayout->addWidget(_btnSaveFile,14,0,1,2);
 
-    _gridLayout->addItem(_space,11,1,1,2);
+	_gridLayout->addItem(_space,15,1,1,2);
 
     _optionMenu = new QWidget();
     _optionMenu->setLayout(_gridLayout);
@@ -231,7 +233,6 @@ void MainWindow::tmpHandler(QString msg) {
     qDebug() << "sprava: " << msg;
 }
 
-
 void MainWindow::btnErrorHandler() {
     _logConsole->show();
 }
@@ -241,6 +242,12 @@ void MainWindow::errorMsgHandler(QString) {
 }
 
 void MainWindow::openHandler() {
+
+
+	Settings::generateEvent = _checkEvent->isChecked();
+	Settings::generateSoftskill = _checkSoftskill->isChecked();
+	Settings::generateRoom = _checkRoom->isChecked();
+	Settings::generateInstructor = _checkInstructor->isChecked();
 
     if(_calendar) {
         //delete old calendar
@@ -282,36 +289,46 @@ void MainWindow::openHandler() {
     //_calendar->sortCompressedList();
 
     _btnSaveFile->setEnabled(true);
-    _btnColor->setEnabled(true);
-    //_btnOpenFile->setEnabled(false);
+	//docasne vypnute kvoli prerabne TrainingRoom
+	_btnColor->setEnabled(true);
+
+	//_btnOpenFile->setEnabled(false);
     //_editDateBegin->setEnabled(false);
     //_editDateEnd->setEnabled(false);
 
-    _tab->clearTables();
-    _tab->loadData();
+	_tab->clearTables();
+	_tab->loadData();
 
-
+	setExportCheckboxiesEnable(false);
 }
-
 
 void MainWindow::saveHandler() {
 
+	Settings::calendarTitleLabel = getTitle();
+
+	Settings::eventLabel = _lineEventLabel->text();
+	Settings::eventAfterDeadlineLabel = _lineEventAfterDeadlineLabel->text();
+	Settings::roomLabel = _lineRoomLabel->text();
+	Settings::instructorLabel = _lineInstructorLabel->text();
+
+	Settings::widthEventTitle = _spinWidth->value();
+
     _calendar->setDates(_editDateBegin->date(), _editDateEnd->date());
-    // .event_title, .room_title { width: 10cm; }
 
+	// .event_title, .room_title { width: 100mm; }
     QString eventTitleWidth;
-
     if(_checkWidth->isChecked()) {
         eventTitleWidth = "." +Cell::getCssClassAsString(Cell::event_title)
                  + ", ." +Cell::getCssClassAsString(Cell::group_title)+
                 + ", ." +Cell::getCssClassAsString(Cell::room_title)+ " { width: "
-                + QString::number((int)(_spinWidth->value()*10))+ "mm;}\n";
+				+ QString::number((int)(Settings::widthEventTitle*10))+ "mm;}\n";
 
     }
 
     QString cssFile = loadFileAsString(":default.css");
     _calendar->setCss(cssFile + eventTitleWidth);
-    _calendar->generateCalendar(getTitle(), _checkEvent->isChecked(), _checkRoom->isChecked(), _checkCoach->isChecked());
+
+	_calendar->generateCalendar();
 
 
 	//QString filename = QFileDialog::getSaveFileName(this,"save html page",QString(), "html (*.html)");
@@ -332,11 +349,7 @@ void MainWindow::saveHandler() {
     //_btnSaveFile->setEnabled(false);
     //_editDateBegin->setEnabled(true);
     //_editDateEnd->setEnabled(true);
-
-
     _btnError->setStyleSheet("QPushButton { color : black; }");
-
-
 }
 
 void MainWindow::initTable() {
@@ -396,3 +409,9 @@ void MainWindow::newColorHandler(QColor newColor) {
     _tab->setCurrentRowColor(newColor);
 }
 
+void MainWindow::setExportCheckboxiesEnable(bool state) {
+	_checkEvent->setEnabled(state);
+	_checkSoftskill->setEnabled(state);
+	_checkRoom->setEnabled(state);
+	_checkInstructor->setEnabled(state);
+}

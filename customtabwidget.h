@@ -28,30 +28,27 @@ signals:
     //void currentEvent();
 
 private:
-    CrTableWidget *_tableEvent, *_tableRoom, *_tableCoach;
+	CrTableWidget *_tableEvent; // *_tableRoom, *_tableInstructor;
 
     //load data
     void initTableEvent();
-    void initTableRoom();
-    void initTableCoach();
 
     void loadEvents();
-    void loadEventsFromList(listOfListOfEvents &list);
-    void loadRooms(CalendarData::RoomOrCoach what);
+	void loadEventsFromList(listOfListOfEvents &list, int &counter);
 
     //change data
     void changeLineEventColor(listOfListOfEvents &list, int index, QColor color);
     void changeEventColor(QColor color);
-    void changeRoomColor(int index, QColor color, CalendarData::RoomOrCoach what);
+	void changeRoomColor(int index, QColor color, CalendarData::RoomOrInstructor what);
 
 
     int mapTableRowToEventLine(int tableRow);
 
-
-    int _eventCounter;
     //konstanta, udava od ktoreho riadku v _tableEvent zacina vypisovanie udajov
     // z _listOfEventsAfterDeadline
     int _startRowEventAfterDeadline;
+	int _startRowSoftSkill;
+	int _startRowSoftSkillAfterDeadline;
 
 
 

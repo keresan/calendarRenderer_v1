@@ -58,7 +58,6 @@ QString CrCalendar::loadTagValue(QString tagName, QDomNode *parent) {
      }
 
     return tagValue;
-
 }
 
 /**
@@ -78,7 +77,6 @@ bool CrCalendar::readXmlFile(QString path) {
     result = file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     if(!result){
-
         emit signalErrorMsg("subor sa nepodarilo otvorit");
         return false;
     }
@@ -90,17 +88,17 @@ bool CrCalendar::readXmlFile(QString path) {
     result = mDocument.setContent(file.readAll());
 
     if(!result){
-
         return false;
     }
 
     rootElement = mDocument.documentElement();
 
-
     QDomNodeList eventList = rootElement.childNodes();
     QList<CrEvent> listEvents;
     QList<CrEvent> listEventsAfterDeadline;
     QList<CrEvent> listWorkAction;
+	QList<CrEvent> listEventsSoftskill;
+	QList<CrEvent> listEventsSoftskillAfterDeadline;
 
     emit signalInfoMsg("zaciatok nacitania dat z xml suboru");
 
@@ -108,7 +106,7 @@ bool CrCalendar::readXmlFile(QString path) {
         state = true;
         convertResult = true;
         QColor color;
-        QColor colorCoach, colorRoom;
+		QColor colorInstructor, colorRoom;
         /*
          * treba error handling - ak vrateny QString je prazdny, tak doslo ku chybe
          * pripadne, ak sa string neda skonvertovat na int
@@ -118,12 +116,12 @@ bool CrCalendar::readXmlFile(QString path) {
         QDomNode node = eventList.at(i);
 
 
-        QString courseName =  loadTagValue("kurz_nazov", &node);
+		QString courseName =  loadTagValue(Settings::tagKurzNazov, &node);
         if(courseName.isEmpty()) {
             state = false;
         }
 
-        QString courseIdStr =  loadTagValue("kurz_id", &node);
+		QString courseIdStr =  loadTagValue(Settings::tagKurzId, &node);
         int courseId;
         if(courseIdStr.isEmpty()) {
             state = false;
@@ -134,7 +132,7 @@ bool CrCalendar::readXmlFile(QString path) {
             }
         }
 
-        QString durationDaysStr =  loadTagValue("dni_trvanie", &node);
+		QString durationDaysStr =  loadTagValue(Settings::tagDniTrvanie, &node);
         int durationDays;
         if(durationDaysStr.isEmpty()) {
             state = false;
@@ -145,9 +143,7 @@ bool CrCalendar::readXmlFile(QString path) {
             }
         }
 
-
-
-        QString durationHoursStr =  loadTagValue("hod_trvanie", &node);
+		QString durationHoursStr =  loadTagValue(Settings::tagHodTrvanie, &node);
         int durationHours;
         if(durationHoursStr.isEmpty()) {
         } else {
@@ -158,19 +154,22 @@ bool CrCalendar::readXmlFile(QString path) {
         }
 
 
-        QString eventTypeStr = loadTagValue("typ_skolenia", &node);
+		//typ udalosti
+		QString eventTypeStr = loadTagValue(Settings::tagTypSkolenia, &node);
         if(eventTypeStr.isEmpty()) {
             state = false;
         }
 
         CrEvent::EventType eventType;
-        if(eventTypeStr.compare("prac_aktivita",Qt::CaseInsensitive) == 0) {
+		if(eventTypeStr.compare(Settings::tagOptPracAktivita,Qt::CaseInsensitive) == 0) {
             eventType = CrEvent::workAction;
-        } else {
+		} else if(eventTypeStr.compare(Settings::tagOptSoftskill,Qt::CaseInsensitive) == 0) {
+			eventType = CrEvent::softskill;
+		}else {
             eventType = CrEvent::Course;
         }
 
-        QString dateBeginStr =  loadTagValue("datum_zaciatok", &node);
+		QString dateBeginStr =  loadTagValue(Settings::tagDatumZaciatok, &node);
         if(dateBeginStr.isEmpty()) {
             state = false;
         }
@@ -180,13 +179,12 @@ bool CrCalendar::readXmlFile(QString path) {
                 state = false;
         }
 
-
-        QString roomName =  loadTagValue("skoliaca_miestnost_nazov", &node);
+		QString roomName =  loadTagValue(Settings::tagSkoliacaMiestnostNazov, &node);
         if(roomName.isEmpty() && eventType != CrEvent::workAction) {
             state = false;
         }
 
-        QString roomIdStr =  loadTagValue("skoliaca_miestnost_id", &node);
+		QString roomIdStr =  loadTagValue(Settings::tagSkoliacaMiestnostId, &node);
         int roomId;
         if(roomIdStr.isEmpty() && eventType != CrEvent::workAction) {
             state = false;
@@ -197,77 +195,50 @@ bool CrCalendar::readXmlFile(QString path) {
             }
         }
 
-        QString coachName =  loadTagValue("skolitel_nazov", &node);
-        if(coachName.isEmpty() && eventType != CrEvent::workAction) {
-
+		QString instructorName =  loadTagValue(Settings::tagSkolitelNazov, &node);
+		if(instructorName.isEmpty() && eventType != CrEvent::workAction) {
             state = false;
         }
 
-        QString coachIdStr =  loadTagValue("skolitel_id", &node);
-        int coachId;
-        if(coachIdStr.isEmpty() && eventType != CrEvent::workAction) {
+		QString instructorIdStr =  loadTagValue(Settings::tagSkolitelId, &node);
+		int instructorId;
+		if(instructorIdStr.isEmpty() && eventType != CrEvent::workAction) {
             state = false;
         } else {
-            coachId = coachIdStr.toInt(&convertResult);
+			instructorId = instructorIdStr.toInt(&convertResult);
             if(!convertResult) {
                 state = false;
             }
         }
 
-        QString activeDays = loadTagValue("aktiv_den", &node);
+		QString activeDays = loadTagValue(Settings::tagAktivDen, &node);
         if(activeDays.isEmpty()) {
             state = false;
 
         }
 
-        QString rgbColorStr = loadTagValue("farba_skolenia", &node);
+		QString rgbColorStr = loadTagValue(Settings::tagFarbaSkolenia, &node);
         if(rgbColorStr.isEmpty()) {
             emit signalErrorMsg("udalost zacinajuca v "+dateBeginStr+" nema farbu ! bude pouzita #000000.");
         }
         //v pripade chyby sa nacita defaultna farba = #000000
         color.setNamedColor(rgbColorStr);
 
-        QString department = loadTagValue("utvar_cislo", &node);
+		QString department = loadTagValue(Settings::tagUtvarCislo, &node);
         if(department.isEmpty() && eventType != CrEvent::workAction) {
             state = false;
         }
 
-        QString deadlineStr = loadTagValue("zamok_stav", &node);
+		QString deadlineStr = loadTagValue(Settings::tagZamokStav, &node);
         //bool afterDeadline = false;
         CalendarData::Deadline deadline = CalendarData::before;
         if(!deadlineStr.isEmpty()) {
             if(deadlineStr.compare("po_zamknuti",Qt::CaseInsensitive) == 0) {
                 deadline = CalendarData::after;
-            }
+			}
         }
 
-        QString colorCoachStr = loadTagValue("farba_skolitela", &node);
-        if(colorCoachStr.isEmpty()) {
-            emit signalErrorMsg("udalost zacinajuca v "+dateBeginStr+" nema farbu skolitela ! bude pouzita #000000.");
-        }
-        //v pripade chyby sa nacita defaultna farba = #000000
-        colorCoach.setNamedColor(colorCoachStr);
-
-        QString colorRoomStr = loadTagValue("farba_miestnosti", &node);
-        if(colorRoomStr.isEmpty()) {
-            emit signalErrorMsg("udalost zacinajuca v "+dateBeginStr+" nema farbu miestnosti ! bude pouzita #000000.");
-        }
-        //v pripade chyby sa nacita defaultna farba = #000000
-        colorRoom.setNamedColor(colorRoomStr);
-
-        /*
-        qDebug() << "courseName:" << courseName;
-        qDebug() << "courseId:" << courseId;
-        qDebug() << "durationDays:" << durationDays;
-        qDebug() << "durationHours:" << durationHours;
-        qDebug() << "dateBegin:" << dateBegin.toString("dd.MM.yyyy");
-        qDebug() << "roomName:" << roomName;
-        qDebug() << "roomId:" << roomId;
-        qDebug() << "coachName:" << coachName;
-        qDebug() << "coachId:" << coachId;
-
-        qDebug() << "--------";
-        */
+		QString courseOptionalText = loadTagValue(Settings::tagKurzVolitelnyText, &node);
 
         //error msg
         if(!state) {
@@ -275,6 +246,7 @@ bool CrCalendar::readXmlFile(QString path) {
             msg += "==chyba v zazname:<br>";
             msg += "kurz_nazov= \""+courseName+"\"<br>";
             msg += "kurz_id= \""+courseIdStr+"\"<br>";
+			msg += Settings::tagKurzVolitelnyText +"= "+courseOptionalText+"\"<br>";
             msg += "utvar= \""+department+"\"<br>";
             msg += "dni_trvanie= \""+durationDaysStr+"\"<br>";
             msg += "hod_trvanie= \""+durationHoursStr+"\"<br>";
@@ -282,8 +254,8 @@ bool CrCalendar::readXmlFile(QString path) {
             msg += "datum_zaciatok= \""+dateBeginStr+"\"<br>";
             msg += "skoliaca_miestnost_nazov= \""+roomName+"\"<br>";
             msg += "skoliaca_miestnost_id= \""+roomIdStr+"\"<br>";
-            msg += "skolitel_nazov= \""+coachName+"\"<br>";
-            msg += "skolitel_id= \""+coachIdStr+"\"<br>";
+			msg += "skolitel_nazov= \""+instructorName+"\"<br>";
+			msg += "skolitel_id= \""+instructorIdStr+"\"<br>";
             msg += "aktiv_den= \""+activeDays+"\"<br>";
             msg += "=> zaznam bude vynechany !!<br>";
             msg += "----------------";
@@ -294,47 +266,59 @@ bool CrCalendar::readXmlFile(QString path) {
         }
         counter++;
 
-        /**
-          * + active days
-          */
 
         QList<CrEvent> *list;
 
         if(eventType == CrEvent::workAction) {
+			//pracovna udalost
             list = &listWorkAction;
         } else {
-            if(deadline == CalendarData::after) {
-                list = &listEventsAfterDeadline;
-            } else {
-                list = &listEvents;
-            }
+			//obycajne udalosti
+			if(eventType == CrEvent::Course && Settings::generateEvent) {
+				if(deadline == CalendarData::after) {
+					// udalost s priznakom, ze bola pridana az po uzamknuti planu
+					list = &listEventsAfterDeadline;
+				} else {
+					list = &listEvents;
+				}
+			//soft skills
+			} else if(eventType == CrEvent::softskill && Settings::generateSoftskill) {
+				if(deadline == CalendarData::after) {
+					// softskill s priznakom, ze bola pridana az po uzamknuti planu
+					list = &listEventsSoftskillAfterDeadline;
+				} else {
+					list = &listEventsSoftskill;
+				}
+			} else {
+				continue;
+			}
         }
 
         //add event to list
-        list->append(CrEvent(courseName,courseId, dateBegin, durationDays, roomId, durationHours, color, department, uniqeId));
+		list->append(CrEvent(courseName,courseId, dateBegin, durationDays, durationHours, color,courseOptionalText, department, uniqeId));
         list->last().addActiveDay(activeDays);
         list->last().calculateDateEnd();
         list->last().setEventType(eventType);
 
-
+		//add room and instructor staffs
         if(eventType != CrEvent::workAction) {
 
             //room staffs
             if( _calendarData._trainingRooms.contains(roomId)) {
-                _calendarData._trainingRooms.operator [](roomId).addDay(list->last().getEventDays());
+				_calendarData._trainingRooms.operator [](roomId).addDay(list->last().getEventDays(), uniqeId);
             } else {
                 TrainingRoom newRoom(roomName, roomId, colorRoom);
-                newRoom.addDay(list->last().getEventDays());
+				newRoom.addDay(list->last().getEventDays(),uniqeId);
                 _calendarData._trainingRooms.insert(roomId, newRoom);
             }
 
-            //coach staffs
-            if( _calendarData._trainingCoach.contains(coachId)) {
-               _calendarData._trainingCoach.operator [](coachId).addDay(list->last().getEventDays());
+			//instructor staffs
+			if( _calendarData._trainingInstructor.contains(instructorId)) {
+			   _calendarData._trainingInstructor.operator [](instructorId).addDay(list->last().getEventDays(), uniqeId);
             } else {
-                TrainingRoom newCoach(coachName, coachId, colorCoach);
-                newCoach.addDay(list->last().getEventDays());
-               _calendarData._trainingCoach.insert(coachId, newCoach);
+				TrainingRoom newInstructor(instructorName, instructorId, colorInstructor);
+				newInstructor.addDay(list->last().getEventDays(), uniqeId);
+			   _calendarData._trainingInstructor.insert(instructorId, newInstructor);
             }
 
         }
@@ -351,7 +335,10 @@ bool CrCalendar::readXmlFile(QString path) {
 
     _calendarData._listOfEvents = CalendarData::createCompressedEventList(listEvents);
     _calendarData._listOfEventsAfterDeadline = CalendarData::createCompressedEventList(listEventsAfterDeadline);
-    _calendarData.createCompressedWorkActivityList(listWorkAction);
+	_calendarData._listOfSoftskill = CalendarData::createCompressedEventList(listEventsSoftskill);
+	_calendarData._listOfSoftskillAfterDeadline = CalendarData::createCompressedEventList(listEventsSoftskillAfterDeadline);
+
+	_calendarData.createCompressedWorkActivityList(listWorkAction);
 
 	qDebug() << "list of work actions:";
 	_calendarData.printCompressedList(_calendarData._listOfWorkAction);
@@ -364,9 +351,7 @@ bool CrCalendar::readXmlFile(QString path) {
 /***********************************************
  * generate calendar
  ***********************************************/
-
-
-void CrCalendar::generateCalendar(QString title, bool genEvent, bool genRoom, bool genCoach) {
+void CrCalendar::generateCalendar() {
 
     _html.clear();
     _html += "<!DOCTYPE html>";
@@ -375,8 +360,6 @@ void CrCalendar::generateCalendar(QString title, bool genEvent, bool genRoom, bo
 
     _html += "<style type=\"text/css\">\n";
     _html += getListOfClassAndColors();
-    _html += getListOfClassAndColors(CalendarData::room);
-    _html += getListOfClassAndColors(CalendarData::coach);
     _html += getListOfClassAndColorsOfWorkActivity();
     _html += css();
     _html += "</style>\n";
@@ -384,7 +367,7 @@ void CrCalendar::generateCalendar(QString title, bool genEvent, bool genRoom, bo
     _html += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
 
     _html += "<title>";
-    _html += title;
+	_html += Settings::calendarTitleLabel;
     _html += "</title>";
 
     _html += "</head>";
@@ -397,10 +380,9 @@ void CrCalendar::generateCalendar(QString title, bool genEvent, bool genRoom, bo
     _html += "<tr>";
     _html += "<td colspan=\""+ QString::number(_dateFirst.daysTo(_dateLast)+5) +"\"";
     _html += "class=\""+ Cell::getCssClassAsString(Cell::calendar_title) +"\">";
-    _html += title;
+	_html += Settings::calendarTitleLabel;
     _html += "</td>";
     _html += "</tr>";
-
 
     //add month names
     _html += "<tr>";
@@ -425,23 +407,33 @@ void CrCalendar::generateCalendar(QString title, bool genEvent, bool genRoom, bo
 
     _html += "<tbody>";
 
-    if(genEvent) {
-        //add work activity
-        _html += generateWorkActivity();
+	//add work activity
+	_html += generateWorkActivity();
 
-        //add events
-        _html += generateEvents();
-        _html += generateEventsAfterDeadline();
-    }
+	 _eventCounter = 1;
+	//add events
+	if(Settings::generateEvent) {
+		_html += generateEvents(_calendarData._listOfEvents, Settings::eventLabel,true);
+		_html += generateEventsAfterDeadline(_calendarData._listOfEventsAfterDeadline, Settings::eventAfterDeadlineLabel);
+	}
+	//add soft skills
+	if(Settings::generateSoftskill) {
+		bool showHeadTitle = false;
+		if(!Settings::generateEvent) {
+			showHeadTitle = true;
+		}
+		_html += generateEvents(_calendarData._listOfSoftskill, Settings::softSkillLabel, showHeadTitle);
+		_html += generateEventsAfterDeadline(_calendarData._listOfSoftskillAfterDeadline, Settings::softSkillAfterDeadlineLabel);
+	}
 
-    if(genRoom) {
+	if(Settings::generateRoom) {
         //add rooms
         _html += generateRooms(CalendarData::room);
     }
 
-    if(genCoach) {
-        //add coaches
-        _html += generateRooms(CalendarData::coach);
+	if(Settings::generateInstructor) {
+		//add instructors
+		_html += generateRooms(CalendarData::instructor);
     }
 
     _html += "</tbody>";
@@ -587,29 +579,54 @@ QString CrCalendar::generateWorkActivity() {
 
 }
 
-QString CrCalendar::generateEvents() {
-
-    _eventCounter = 1;
+QString CrCalendar::generateEvents(listOfListOfEvents &list, QString title, bool showHeadTitle) {
 
     QString str;
 
+	if(showHeadTitle) {
+	}
     str += "<tr>";
-    //serial numeber
-    str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">#</td>";
+	//serial number
+	str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">";
+	if(showHeadTitle) {
+		str += "#";
+	}
+	str += "</td>";
+
     //department
-    str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">Útvar</td>";
-    //event title
-    str += "<td colspan=\"2\" class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">" + "Školenie" +"</td>";
+	str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">";
+	if(showHeadTitle) {
+		str += Settings::departmentLabel;
+	}
+	str += "</td>";
+
+
+	//event title
+	str += "<td colspan=\"2\" class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">" +title+ "</td>";
     str += "<td colspan=\" "+ QString::number(_dateFirst.daysTo(_dateLast)+1) +"\"></td>";
     str += "</tr>";
 
-    str += generateEventsFromList(_calendarData._listOfEvents, false);
+	if(list.isEmpty()) {
+		str += "<tr class=\"" +Cell::getCssClassAsString(Cell::tr_end)+ "\">";;
+		//serial number
+		str += "<td></td>";
+		//department
+		str += "<td></td>";
+		//event title
+		str += "<td></td>";
+		//color
+		str += "<td></td>";
+		//line
+		str += generateEmptyLine();
+		str += "</tr>";
+	} else {
+		str += generateEventsFromList(list, false);
+	}
 
     return str;
 
 }
-
-QString CrCalendar::generateEventsAfterDeadline() {
+QString CrCalendar::generateEventsAfterDeadline(listOfListOfEvents &list, QString title) {
 
     QString str;
 
@@ -620,14 +637,14 @@ QString CrCalendar::generateEventsAfterDeadline() {
     str += "<td></td>";
 
     //event title
-    str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">Školenie doplnené po uzamknutí plánu</td>";
+	str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">" +title+ "</td>";
     //color
     str += "<td></td>";
     //line
     str += generateEmptyLine();
     str += "</tr>";
 
-    if(_calendarData._listOfEventsAfterDeadline.isEmpty()) {
+	if(list.isEmpty()) {
         str += "<tr class=\"" +Cell::getCssClassAsString(Cell::tr_end)+ "\">";;
         //serial number
         str += "<td></td>";
@@ -642,11 +659,8 @@ QString CrCalendar::generateEventsAfterDeadline() {
         str += "</tr>";
     } else {
 
-        str += generateEventsFromList(_calendarData._listOfEventsAfterDeadline, true);
+		str += generateEventsFromList(list, true);
     }
-
-
-
     return str;
 }
 
@@ -655,8 +669,6 @@ QString CrCalendar::generateEventsFromList(listOfListOfEvents &list, bool highli
 
     QString str;
     listOfListOfEvents::iterator listOfListIterator;
-
-
 
     for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
 
@@ -684,21 +696,21 @@ QString CrCalendar::generateEventsFromList(listOfListOfEvents &list, bool highli
         //add department
         str += "<td class=\""+Cell::getCssClassAsString(Cell::department_number)+"\">"+ listOfListIterator->first().department() +"</td>";
 
-
         //add event title
         str += "<td><div class=\""+Cell::getCssClassAsString(Cell::event_title)+"\">";
         str += listOfListIterator->first().title();
         str += "</div></td>\n";
 
-        //add color cell
-        str += "<td class=\""+getClassNameOfRow(_eventCounter)+"\">&nbsp&nbsp</td>";
-
+		//add color cell with optional text
+		str += "<td class=\""+getClassNameOfRow(_eventCounter)+"\">&nbsp";
+		str += listOfListIterator->first().optionalText();
+		str += "&nbsp</td>";
         //add event line
         str += generateEventLine(listOfListIterator.operator *(), getClassNameOfRow(_eventCounter));
 
-        str += "</tr>\n";
-
+		str += "</tr>\n";
         _eventCounter++;
+
     }
 
     return str;
@@ -766,18 +778,22 @@ QString CrCalendar::generateEventLine(QList<CrEvent> &list, QString className) {
     return returnStr;
 }
 
-QString CrCalendar::generateRooms(CalendarData::RoomOrCoach what) {
+QString CrCalendar::generateRooms(CalendarData::RoomOrInstructor what) {
     QString str;
 
     QString title;
     trainingRoomMap trainingMap;
+
+
     if(what == CalendarData::room) {
-        title = "Školiaca miestnosť";
+		title = Settings::roomLabel;
         trainingMap = _calendarData._trainingRooms;
-    } else if(what == CalendarData::coach) {
-        title = "Inštruktor";
-        trainingMap = _calendarData._trainingCoach;
-    }
+	} else if(what == CalendarData::instructor) {
+		title = Settings::instructorLabel;
+		trainingMap = _calendarData._trainingInstructor;
+	} else {
+		throw std::runtime_error("generateRooms(): unknown RoomOrInstructor");
+	}
 
     str += "<tr>";
     //str += "<td></td><td></td>";
@@ -814,16 +830,11 @@ QString CrCalendar::generateRooms(CalendarData::RoomOrCoach what) {
 
         //add serial number
          str += "<td class=\""+Cell::getCssClassAsString(Cell::event_serial_number)+"\">"+ QString::number(counter) +"</td>";
-         //add department
-         str += "<td></td>\n";
 
-         //add room title
-         str += "<td><div "+ cellTitle.getCssClasses()+ ">";
+		 //add department + room title + color cell
+		 str += "<td colspan=\"3\"><div "+ cellTitle.getCssClasses()+ ">";
          str += cellTitle.text();
          str += "</div></td>\n";
-
-         //add color cell
-         str += "<td class=\""+getClassNameOfRow(counter,what)+"\">&nbsp&nbsp</td>\n";
 
          //add rooms line
          for(QDate daysIterator = _dateFirst; daysIterator <= _dateLast; daysIterator = daysIterator.addDays(1)) {
@@ -835,14 +846,25 @@ QString CrCalendar::generateRooms(CalendarData::RoomOrCoach what) {
                  cellBody.addCssClass(Cell::non_work_day);
              }
 
-             if(room->isOccupied(daysIterator)) {
-                 cellBody.addCssClass(Cell::event_day);
+			 int row = -6666;
+			 int eventId;
+
+			 if(room->isOccupied(daysIterator)) {
+				 cellBody.addCssClass(Cell::event_day);
+
+				 //look up color of cell
+				 eventId = room->eventId(daysIterator);
+				 if(eventId < 0) {
+					 qDebug() << "NEZNAME ID";
+				 }
+				_calendarData.getRowColor(eventId,row);
+
              }
-
              str += "<td ";
-
              if(cellBody.isClass(Cell::event_day)) {
-                 str += cellBody.getCssClasses(getClassNameOfRow(counter,what));
+				 //qDebug() << cellTitle.text() << "eventId:"<< eventId << ", row:" << row+1 ;
+				 str += cellBody.getCssClasses(getClassNameOfRow(row+1));
+				 //str += cellBody.getCssClasses(getClassNameOfRow(row,what));
              } else {
                  str += cellBody.getCssClasses();
              }
@@ -850,7 +872,6 @@ QString CrCalendar::generateRooms(CalendarData::RoomOrCoach what) {
              str += "</td>\n";
          }
          str += "</tr>\n";
-
 
         counter++;
         room++;
@@ -906,8 +927,6 @@ QString CrCalendar::getMonthString(int monthNumber) {
     case 10: returnStr= "október"; break;
     case 11: returnStr= "november"; break;
     case 12: returnStr= "december"; break;
-
-
     }
 
     return returnStr;
@@ -923,28 +942,10 @@ QString CrCalendar::getClassNameOfRow(int index) {
 }
 
 /**
- * @brief podla indexu vrati nazov triedy v tvare class_WHAT_row_#
- * @param index - poradove cislo v _compressedListOfEvents
- * @param what = room alebo coach
- * @return
- */
-QString CrCalendar::getClassNameOfRow(int index, CalendarData::RoomOrCoach what) {
-
-    if(what == CalendarData::room) {
-        return "class_room_row_"+QString::number(index);
-    } else if(what == CalendarData::coach) {
-        return "class_coach_row_"+QString::number(index);
-    } else {
-        assert(false);
-    }
-
-}
-
-/**
  * @brief zisti jednotlive farby riadkov a vrati zoznam css tried s nastavenou touto farbou
  * @return
  */
-QString CrCalendar::getListOfClassAndColorsFromList(listOfListOfEvents &list) {
+QString CrCalendar::getListOfClassAndColorsFromList(listOfListOfEvents &list, int &counter) {
     QString returnStr;
 
 
@@ -952,16 +953,16 @@ QString CrCalendar::getListOfClassAndColorsFromList(listOfListOfEvents &list) {
     for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
 
         //get hex color
-        QString colorName = listOfListIterator->first().color().name();
+		QString colorName = listOfListIterator->first().colorDay().name();
 
         //get class name
-        QString className = getClassNameOfRow(_eventCounter);
+		QString className = getClassNameOfRow(counter);
 
         //put it together
        // vzor: .class_row_1 {background-color: #FF00FF;}
         returnStr += "."+className+" { background-color: "+colorName+"; }\n";
 
-        _eventCounter++;
+		counter++;
     }
 
     return returnStr;
@@ -969,45 +970,13 @@ QString CrCalendar::getListOfClassAndColorsFromList(listOfListOfEvents &list) {
 
 QString CrCalendar::getListOfClassAndColors() {
     QString str;
-    _eventCounter = 1;
-    str += getListOfClassAndColorsFromList(_calendarData._listOfEvents);
-    str += getListOfClassAndColorsFromList(_calendarData._listOfEventsAfterDeadline);
+	int counter = 1;
+	str += getListOfClassAndColorsFromList(_calendarData._listOfEvents, counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfEventsAfterDeadline,counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfSoftskill, counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfSoftskillAfterDeadline,counter);
 
-    return str;
-
-}
-
-QString CrCalendar::getListOfClassAndColors(CalendarData::RoomOrCoach what) {
-    QString returnStr;
-    int index = 1;
-
-
-    trainingRoomMap trainingSet;
-    if(what == CalendarData::room) {
-        trainingSet = _calendarData._trainingRooms;
-    } else if(what == CalendarData::coach) {
-        trainingSet = _calendarData._trainingCoach;
-    } else {
-        assert(false);
-    }
-
-    trainingRoomMap::iterator room = trainingSet.begin();
-
-    for(room = trainingSet.begin(); room != trainingSet.end(); ++room) {
-        //get hex color
-        QString colorName = room->color().name();
-
-        //get class name
-        QString className = getClassNameOfRow(index, what);
-
-        //put it together
-       // vzor: .class_WHAT_row_1 {background-color: #FF00FF;}
-        returnStr += "."+className+" { background-color: "+colorName+"; }\n";
-
-        index ++;
-    }
-
-    return returnStr;
+	return str;
 }
 
 QString CrCalendar::getListOfClassAndColorsOfWorkActivity() {
@@ -1021,7 +990,7 @@ QString CrCalendar::getListOfClassAndColorsOfWorkActivity() {
 
         for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
             //get color
-            QString colorName = eventIterator->color().name();
+			QString colorName = eventIterator->colorDay().name();
             //get class
             QString className = eventIterator->getClassNameOfId();
 

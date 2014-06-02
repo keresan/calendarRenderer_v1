@@ -5,7 +5,7 @@
 #include "crtablewidget.h"
 
 #include "calendardata.h"
-
+#include "settings.h"
 
 #include <QObject>
 #include <QList>
@@ -17,8 +17,6 @@
 #include <QStringList>
 #include <QColor>
 #include <QMap>
-
-
 
 class CrCalendar : public QObject {
    Q_OBJECT
@@ -33,8 +31,6 @@ public:
     bool readXmlFile(QString path);
 QString loadTagValue(QString tagName, QDomNode *parent);
 
-
-
     //utility
     void setCss(QString css);
     void addCss(QString css);
@@ -45,34 +41,27 @@ QString loadTagValue(QString tagName, QDomNode *parent);
     void setDates(QDate first, QDate last);
 
     //generate calendar
-    void generateCalendar(QString title, bool genEvent = true, bool genRoom = true, bool genCoach = true );
+	void generateCalendar();
     QString generateMonthTitle();
     QString generateDayNumber();
-    QString generateEvents();
-    QString generateEventsAfterDeadline();
+	QString generateEvents(listOfListOfEvents &list, QString title, bool showHeadTitle);
+	QString generateEventsAfterDeadline(listOfListOfEvents &list, QString title);
     QString generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr);
     QString generateEventLine(QList<CrEvent> &list, QString className);
     QString generateEmptyLine();
-    QString generateRooms(CalendarData::RoomOrCoach what);
+	QString generateRooms(CalendarData::RoomOrInstructor what);
     QString generateWorkActivity();
 
-
     QString getHtml();
-
-
-
 
     //lepsie bude vycelnit _compressedListOfEvents do samostatnej static triedy
     //friend class CrTableWidget;
 
     //static listOfListOfEvents _compressedListOfEvents;
 
-    QString getListOfClassAndColorsFromList(listOfListOfEvents &list);
+	QString getListOfClassAndColorsFromList(listOfListOfEvents &list, int &counter);
     QString getListOfClassAndColors();
     QString getClassNameOfRow(int index);
-
-    QString getListOfClassAndColors(CalendarData::RoomOrCoach what);
-    QString getClassNameOfRow(int index, CalendarData::RoomOrCoach what);
 
     QString getListOfClassAndColorsOfWorkActivity();
 

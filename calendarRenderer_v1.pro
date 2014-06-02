@@ -24,7 +24,8 @@ SOURCES += main.cpp\
 	crtablewidget.cpp \
     calendardata.cpp \
     customtabwidget.cpp \
-    colordialog.cpp
+    colordialog.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     crevent.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     crtablewidget.h \
     calendardata.h \
     customtabwidget.h \
-    colordialog.h
+    colordialog.h \
+    settings.h
 
 FORMS    += mainwindow.ui
 

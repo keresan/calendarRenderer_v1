@@ -1,6 +1,7 @@
 #ifndef CALENDARDATA_H
 #define CALENDARDATA_H
 
+#include "stdexcept"
 
 #include "crevent.h"
 #include "trainingroom.h"
@@ -10,9 +11,9 @@ class CalendarData {
 public:
     CalendarData();
 
-    enum RoomOrCoach {
+	enum RoomOrInstructor {
         room,
-        coach
+		instructor
     };
 
     enum Deadline {
@@ -20,14 +21,14 @@ public:
         after
     };
 
-
     static listOfListOfEvents _listOfEvents; // skolenia
-    static listOfListOfEvents _listOfEventsAfterDeadline; // skolenia
+	static listOfListOfEvents _listOfEventsAfterDeadline; // skolenia po deadline
+	static listOfListOfEvents _listOfSoftskill; // soft skills
+	static listOfListOfEvents _listOfSoftskillAfterDeadline;
     static listOfListOfEvents _listOfWorkAction; // ine pracovne aktivity
 
-    static trainingRoomMap _trainingCoach; //skolitelia
+	static trainingRoomMap _trainingInstructor; //skolitelia
     static trainingRoomMap _trainingRooms; //miestnosti
-
 
     static listOfListOfEvents createCompressedEventList(QList<CrEvent> &list);
     static void createCompressedWorkActivityList(QList<CrEvent> &list);
@@ -36,18 +37,16 @@ public:
 
     static void clearData();
 
+	void getRowColor(int eventId, int &eventRow);
+	void getColorFromList(int eventId,listOfListOfEvents &list, int &eventRow);
+
+
     //print
 	void printCompressedList();
 	void printCompressedList(listOfListOfEvents &list);
     void printRoom(int id);
 
-
-
-
-
-
 private:
-
 
     static bool canAdd(CrEvent &event, QList<CrEvent> &list);
     static void add(CrEvent &event, QList<QList<CrEvent> > &list);

@@ -3,8 +3,10 @@
 listOfListOfEvents CalendarData::_listOfWorkAction;
 listOfListOfEvents CalendarData::_listOfEvents;
 listOfListOfEvents CalendarData::_listOfEventsAfterDeadline;
+listOfListOfEvents CalendarData::_listOfSoftskill;
+listOfListOfEvents CalendarData::_listOfSoftskillAfterDeadline;
 
-trainingRoomMap CalendarData::_trainingCoach;
+trainingRoomMap CalendarData::_trainingInstructor;
 trainingRoomMap CalendarData::_trainingRooms;
 
 
@@ -15,7 +17,7 @@ CalendarData::CalendarData() {
 void CalendarData::clearData() {
     _listOfWorkAction.clear();
     _listOfEvents.clear();
-    _trainingCoach.clear();
+	_trainingInstructor.clear();
     _trainingRooms.clear();
 
 }
@@ -42,9 +44,6 @@ bool CalendarData::canAdd(CrEvent &event, QList<CrEvent> &list) {
             break;
         }
     }
-
-
-
     return result;
 }
 
@@ -202,7 +201,7 @@ void CalendarData::printCompressedList() {
 
     for(listOfListIterator = _listOfEvents.begin(); listOfListIterator != _listOfEvents.end(); ++listOfListIterator) {
         for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
-            qDebug("%20s %6d %10s  %10s %6d", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str(), eventIterator->roomId());
+			qDebug("%20s %6d %10s  %10s", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str());
         }
         qDebug("-next:");
     }
@@ -214,24 +213,20 @@ void CalendarData::printCompressedList(listOfListOfEvents &list) {
 
 	for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
 		for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
-			qDebug("%20s %6d %10s  %10s %6d", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str(), eventIterator->roomId());
+			qDebug("%20s %6d %10s  %10s", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str());
 		}
 		qDebug("-next:");
 	}
 }
 
 void CalendarData::printRoom(int id) {
-
-
-
     if(_trainingRooms.contains(id)) {
         TrainingRoom room = _trainingRooms.operator [](id);
-
-        QList<QDate> dateList =  room.occupiedDays();
+		QList<QPair<QDate, int> > dateList =  room.occupiedDays();
 
         qDebug() << room.title();
-        for(int i = 0; i < dateList.count(); i++) {
-            qDebug() << dateList.at(i).toString("dd.MMM.yyyy");
+		for(int i = 0; i < dateList.size(); i++) {
+			qDebug() << dateList.at(i).first.toString("dd.MMM.yyyy");
         }
     } else {
         qDebug() << "ERROR: CrCalendar::printRoom() id=" << id << "not found";
@@ -239,4 +234,46 @@ void CalendarData::printRoom(int id) {
 
 }
 
+/***********************************************
+ * get colors
+ ***********************************************/
 
+/**
+ * @brief Vyhlada riadok z farbou
+ * @param eventId
+ * @param eventRow Najdene cislo riadku s farbou, -1 ak nenajde nic
+ */
+void CalendarData::getRowColor(int eventId, int &eventRow) {
+
+	int offset = 0;
+	getColorFromList(eventId, _listOfEvents, eventRow);
+	if(eventRow < 0) {
+		offset += _listOfEvents.size();
+		getColorFromList(eventId, _listOfEventsAfterDeadline, eventRow);
+		if(eventRow < 0) {
+			offset += _listOfEventsAfterDeadline.size();
+			getColorFromList(eventId, _listOfSoftskill, eventRow);
+			if(eventRow < 0) {
+				offset += _listOfSoftskill.size();
+				getColorFromList(eventId, _listOfSoftskillAfterDeadline, eventRow);
+			}
+		}
+	}
+	if(eventRow > 0) {
+		eventRow += offset;
+	}
+
+}
+
+void CalendarData::getColorFromList(int eventId, listOfListOfEvents &list, int &eventRow) {
+
+	for(int i = 0; i < list.size(); i++) {
+		for(int j = 0; j < list.at(i).size(); j++) {
+			if(list[i][j].eventId() == eventId) {
+				eventRow = i;
+				return;
+			}
+		}
+	}
+	eventRow = -1;
+}

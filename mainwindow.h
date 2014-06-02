@@ -68,9 +68,15 @@ private:
 
     QPushButton *_btnOpenFile, *_btnSaveFile, *_btnError, *_btnColor;
     QGroupBox *_boxExport, *_boxTitle, *_boxDate, *_boxWidth;
-    QCheckBox *_checkEvent, *_checkRoom, *_checkCoach, *_checkTitleDate;
+	QCheckBox *_checkEvent, *_checkRoom, *_checkInstructor, *_checkTitleDate;
 
+	QLineEdit *_lineEventLabel,*_lineEventAfterDeadlineLabel, *_lineRoomLabel, *_lineInstructorLabel;
+
+	//soft skills
+	QLineEdit *_lineSoftskillLabel,*_lineSoftskillAfterDeadlineLabel;
+	QCheckBox *_checkSoftskill;
     QCheckBox *_checkWidth;
+
 
     QComboBox *_comboQuartals;
 
@@ -90,6 +96,10 @@ private:
     QStringList _tableLabels;
 
     void initDock();
+	
+	void setExportCheckboxiesEnable(bool state);
+
+	
     void initTable();
 
     void initCalendar();

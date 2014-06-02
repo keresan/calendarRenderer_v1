@@ -1,6 +1,8 @@
 #include "crtablewidget.h"
 
+
 CrTableWidget::CrTableWidget(QStringList &captions, QWidget *parent): QTableWidget(parent) {
+
 
     this->setColumnCount(captions.count());
     this->setRowCount(1);
@@ -13,6 +15,8 @@ CrTableWidget::CrTableWidget(QStringList &captions, QWidget *parent): QTableWidg
     //connect(this, SIGNAL(currentCellChanged(int,int,int,int)), this, SLOT(itemChangedHandler(int,int,int,int)));
 
     this->setFont(QFont("Verdana"));
+
+
 
 }
 

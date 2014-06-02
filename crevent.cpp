@@ -2,22 +2,22 @@
 
 
 CrEvent::CrEvent(QString courseTitle,
-                 int courseId,
-                 QDate begin,
-                 int duration,
-                 int roomId,
-                 int hours,
-                 QColor color,
-                 QString department,
-                 int id) {
+				 int courseId,
+				 QDate begin,
+				 int duration,
+				 int hours,
+				 QColor colorDay,
+				 QString optionalText,
+				 QString department,
+				 int id) {
 
     _title = courseTitle;
     _titleId = courseId;
     _dateBegin = begin;
     _duration = duration;
-    _roomId = roomId;
     _hours = hours;
-    _color = color;
+	_colorDay = colorDay;
+	_optionalText = optionalText;
     _department = department;
     _id = id;
 
@@ -32,12 +32,12 @@ QDate CrEvent::dateEnd() { return _dateEnd; }
 int CrEvent::hours() { return _hours; }
 
 int CrEvent::duration() { return _duration; }
-int CrEvent::id() { return _id; }
+int CrEvent::eventId() { return _id; }
 int CrEvent::titleId() { return _titleId; }
 QString CrEvent::title() { return _title; }
-int CrEvent::roomId() {return _roomId;}
-QColor CrEvent::color() {return _color;}
+QColor CrEvent::colorDay() {return _colorDay;}
 QString CrEvent::department() { return _department; }
+QString CrEvent::optionalText() {return _optionalText; }
 
 CrEvent::EventType CrEvent::eventType() { return _eventType; }
 void CrEvent::setEventType(EventType type) {
@@ -45,7 +45,7 @@ void CrEvent::setEventType(EventType type) {
 }
 
 void CrEvent::setColor(QColor color) {
-    _color = color;
+	_colorDay = color;
 }
 
 QString CrEvent::getClassNameOfId() {
@@ -177,9 +177,8 @@ Qt::DayOfWeek CrEvent::convertToQtDayOfWeek(CrEvent::DayOfWeek day) {
     }
     return returnDay;
 }
-
 /**
- * @brief CrEvent::lessThanCourseType - radenie v podla eventType, titleId, dateBegin
+ * @brief CrEvent::lessThanCourseType - radenie podla eventType, titleId, dateBegin
  * @param e1
  * @param e2
  * @return

@@ -18,13 +18,16 @@ public:
 
     enum Deadline {
         before,
-        after
+		added,
+		cancelled
     };
 
     static listOfListOfEvents _listOfEvents; // skolenia
-	static listOfListOfEvents _listOfEventsAfterDeadline; // skolenia po deadline
+	static listOfListOfEvents _listOfEventsAdded; // skolenia pridane po deadline
+	static listOfListOfEvents _listOfEventsCancelled; // skolenia zrusene po deadline
 	static listOfListOfEvents _listOfSoftskill; // soft skills
-	static listOfListOfEvents _listOfSoftskillAfterDeadline;
+	static listOfListOfEvents _listOfSoftskillAdded;
+	static listOfListOfEvents _listOfSoftskillCancelled;
     static listOfListOfEvents _listOfWorkAction; // ine pracovne aktivity
 
 	static trainingRoomMap _trainingInstructor; //skolitelia
@@ -36,6 +39,7 @@ public:
     static void sortCompressedList(listOfListOfEvents &list);
 
     static void clearData();
+	static int getEventsCount(listOfListOfEvents &list);
 
 	void getRowColor(int eventId, int &eventRow);
 	void getColorFromList(int eventId,listOfListOfEvents &list, int &eventRow);
@@ -45,6 +49,7 @@ public:
 	void printCompressedList();
 	void printCompressedList(listOfListOfEvents &list);
     void printRoom(int id);
+	static void printList(QList<CrEvent> &list);
 
 private:
 

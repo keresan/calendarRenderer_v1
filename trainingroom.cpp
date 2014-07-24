@@ -62,3 +62,6 @@ bool TrainingRoom::isOccupied(QDate date) {
     }
     return false;
 }
+
+
+// <kurz_volitelny_text>P</kurz_volitelny_text>

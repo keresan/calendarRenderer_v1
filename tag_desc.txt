@@ -1,0 +1,33 @@
+% tag ; hodnota ; vysvetlenie
+% pociatocne a koncove biele znaky su odstranene
+
+<kurz_nazov>;ľubovoľný text;názov kurzu
+<kurz_id>;celé číslo;id kurzu. Podľa id sú kurzy rozlišované
+
+<dni_trvanie>;celé číslo;počet dní trvania kurzu
+<hod_trvanie>;celé číslo;počet hodín trvania kurzu
+
+<typ_skolenia>;prac_aktivita;pracovná aktivita
+;soft_skill;mäkká zručnosť (soft-skill)
+;ľubovoľný text;odborné školenie
+
+<datum_zaciatok>;ľubovoľný dátum;prvý deň kurzu, formát RRRR-MM-DDT00:00:00
+
+<skoliaca_miestnost_nazov>;ľubovoľný text;názov školiacej miestnosti
+<skoliaca_miestnost_id>;celé číslo; id školiacej miestnosti. Podľa id sú miestnosti rozlišované
+
+<skolitel_nazov>;ľubovoľný text; meno školiteľa
+<skolitel_id>;číslo; id školiteľa. Podľa id sú školitelia rozlišovaný
+
+<aktiv_den>;špecifický text; každý aktívny deň, kedy može prebiehať školenie je vyjadrený jeho poradím v týždni. Napr. školenie, ktoré by mohlo prebiehať len v pracovné dni (pondelok až piatok), bude obsahovať hodnotu "12345"
+
+<farba_skolenia>;farba v hex formáte; farba, ktorou je vykreslené školenie. formát #ČČZZMM (červená, zelená, modrá) napr. "#FFB6C1"
+
+<utvar_cislo>;ľubovoľný text; číslo útvaru
+
+
+<zamok_stav>;pridane_po_zamknuti;školenie pridané po uzamknutí plánu
+;zrusene_po_zamknuti;školenie zrušené po uzamknutí plánu
+;ľubovoľný text;školenie pridané pred uzamknutím plánu
+
+<kurz_volitelny_text>;ľubovoľný text; text, ktorý sa zobrazí za názvom kurzu vo štvorčeku s farbou školenia v danom riadku

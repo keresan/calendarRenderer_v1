@@ -89,3 +89,6 @@ table td {
 	padding-right: 1mm;
 }
 
+.canceled_event {
+        text-decoration: line-through;
+}

@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>default.css</file>
         <file>colors.csv</file>
+        <file>tag_desc.txt</file>
     </qresource>
 </RCC>

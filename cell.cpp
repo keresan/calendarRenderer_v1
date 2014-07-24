@@ -28,6 +28,7 @@ QString Cell::getCssClassAsString(cssClassName name) {
         case Cell::workActivity_cell: str.append("workActivity_cell"); break;
         case Cell::event_serial_number: str.append("serial_number"); break;
         case Cell::department_number: str.append("department_number"); break;
+		case Cell::canceled_event: str.append("canceled_event"); break;
 
 
     default:

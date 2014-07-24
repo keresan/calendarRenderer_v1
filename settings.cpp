@@ -18,6 +18,8 @@ QString Settings::tagZamokStav;
 QString Settings::tagKurzVolitelnyText;
 
 QString Settings::tagOptSoftskill;
+QString Settings::tagOptPridaneSkolenie;
+QString Settings::tagOptZruseneSkolenie;
 
 QString Settings::eventLabel;
 QString Settings::roomLabel;
@@ -27,6 +29,7 @@ QString Settings::eventAfterDeadlineLabel;
 QString Settings::calendarTitleLabel;
 QString Settings::softSkillLabel;
 QString Settings::softSkillAfterDeadlineLabel;
+QString Settings::calendarVersion;
 
 bool Settings::generateEvent = true;
 bool Settings::generateRoom = true;
@@ -57,6 +60,8 @@ void Settings::setConstants() {
 
 	tagOptSoftskill = "soft_skill";
 	tagOptPracAktivita = "prac_aktivita";
+	tagOptPridaneSkolenie = "pridane_po_zamknuti";
+	tagOptZruseneSkolenie = "zrusene_po_zamknuti";
 
 	eventLabel = "Odborné školenie";
 	eventAfterDeadlineLabel = "Odborné školenie po uzamknutí";
@@ -65,8 +70,10 @@ void Settings::setConstants() {
 	departmentLabel = "Útvar";
 
 	calendarTitleLabel = "PLÁN ŠKOLENÍ";
-	softSkillLabel = "Mäkké zručnosti (soft-skills)";
-	softSkillAfterDeadlineLabel = "Mäkké zručnosti po uzamknuti";
+	softSkillLabel = "Mäkká zručnosť (soft-skill)";
+	softSkillAfterDeadlineLabel = "Mäkká zručnosť po uzamknutí";
 
 	widthEventTitle = 10.0;
+
+	calendarVersion = "2014.07.24";
 }

@@ -45,8 +45,8 @@ QString loadTagValue(QString tagName, QDomNode *parent);
     QString generateMonthTitle();
     QString generateDayNumber();
 	QString generateEvents(listOfListOfEvents &list, QString title, bool showHeadTitle);
-	QString generateEventsAfterDeadline(listOfListOfEvents &list, QString title);
-    QString generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr);
+	QString generateEventsAfterDeadline(listOfListOfEvents &added, listOfListOfEvents &cancelled, QString title, QString kpi);
+	QString generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr, bool StrikenTitle = false);
     QString generateEventLine(QList<CrEvent> &list, QString className);
     QString generateEmptyLine();
 	QString generateRooms(CalendarData::RoomOrInstructor what);
@@ -65,6 +65,7 @@ QString loadTagValue(QString tagName, QDomNode *parent);
 
     QString getListOfClassAndColorsOfWorkActivity();
 
+	QString getKPI(listOfListOfEvents &beforeLock, listOfListOfEvents &afterLockAdded, listOfListOfEvents &afterLockCancelled);
 
 signals:
     void signalErrorMsg(QString smg);
@@ -95,6 +96,8 @@ private:
     QStringList _monthNames;
 
     int _eventCounter; //pocitadlo udalosti, musi byt aby sa pocitali skolenia pridane po uzavierke
+
+
 };
 
 

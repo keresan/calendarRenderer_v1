@@ -178,28 +178,33 @@ Qt::DayOfWeek CrEvent::convertToQtDayOfWeek(CrEvent::DayOfWeek day) {
     return returnDay;
 }
 /**
- * @brief CrEvent::lessThanCourseType - radenie podla eventType, titleId, dateBegin
+ * @brief CrEvent::lessThanCourseType - radenie podla eventType, titleId, optionalText, dateBegin
  * @param e1
  * @param e2
  * @return
  */
 bool CrEvent::lessThanCourseType(CrEvent &e1, CrEvent &e2) {
-    //compare byt courseType
+	//compare by courseType
     if (e1.eventType() < e2.eventType()) {
         return true;
     }
 
     if(e1.eventType() == e2.eventType()) {
-
         //compate by courseId
         if(e1.titleId() < e2.titleId()) {
             return true;
         }
-        //compate by dateBegin
-        if(e1.titleId() == e2.titleId()) {
-            return e1.dateBegin()  < e2.dateBegin();
-        }
 
+		if(e1.titleId() == e2.titleId()) {
+			int cmpResult = e1.optionalText().compare(e2.optionalText());
+			if(cmpResult < 0) {
+				//compare by optional text
+				return true;
+			} else if(cmpResult == 0) {
+				//compare by dateBegin
+				return e1.dateBegin()  < e2.dateBegin();
+			}
+		}
     }
 
     return false;

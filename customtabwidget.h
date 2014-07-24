@@ -3,9 +3,11 @@
 
 #include "crtablewidget.h"
 #include "crcalendar.h"
+#include "tagdescriptor.h"
 
 
 #include <QTabWidget>
+#include <QTextEdit>
 
 class CustomTabWidget : public QTabWidget {
     Q_OBJECT
@@ -29,9 +31,12 @@ signals:
 
 private:
 	CrTableWidget *_tableEvent; // *_tableRoom, *_tableInstructor;
+	TagDescriptor *_tagDescription;
+
 
     //load data
     void initTableEvent();
+	void initTagDescription();
 
     void loadEvents();
 	void loadEventsFromList(listOfListOfEvents &list, int &counter);
@@ -46,9 +51,11 @@ private:
 
     //konstanta, udava od ktoreho riadku v _tableEvent zacina vypisovanie udajov
     // z _listOfEventsAfterDeadline
-    int _startRowEventAfterDeadline;
+    int _startRowEventAdded;
+	int _startRowEventCancelled;
 	int _startRowSoftSkill;
-	int _startRowSoftSkillAfterDeadline;
+	int _startRowSoftSkillAdded;
+	int _startRowSoftSkillCancelled;
 
 
 

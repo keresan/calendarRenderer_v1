@@ -23,6 +23,8 @@
 #include <QGridLayout>
 #include <QDoubleSpinBox>
 
+#include <QDesktopServices>
+
 
 
 namespace Ui {
@@ -67,6 +69,7 @@ private:
     QLabel *_labQuart;
 
     QPushButton *_btnOpenFile, *_btnSaveFile, *_btnError, *_btnColor;
+	QPushButton *_btnShowWebPage;
     QGroupBox *_boxExport, *_boxTitle, *_boxDate, *_boxWidth;
 	QCheckBox *_checkEvent, *_checkRoom, *_checkInstructor, *_checkTitleDate;
 
@@ -95,6 +98,8 @@ private:
     CustomTabWidget *_tab;
     QStringList _tableLabels;
 
+	QString _saveHtmlFilePath;
+
     void initDock();
 	
 	void setExportCheckboxiesEnable(bool state);
@@ -112,6 +117,7 @@ private slots:
 public slots:
     void openHandler();
     void saveHandler();
+	void showWebPageHandler();
     void btnErrorHandler();
     void errorMsgHandler(QString);
 

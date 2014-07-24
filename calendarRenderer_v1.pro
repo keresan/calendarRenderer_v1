@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     calendardata.cpp \
     customtabwidget.cpp \
     colordialog.cpp \
-    settings.cpp
+    settings.cpp \
+    tagdescriptor.cpp
 
 HEADERS  += mainwindow.h \
     crevent.h \
@@ -37,9 +38,8 @@ HEADERS  += mainwindow.h \
     calendardata.h \
     customtabwidget.h \
     colordialog.h \
-    settings.h
-
-FORMS    += mainwindow.ui
+    settings.h \
+    tagdescriptor.h
 
 OTHER_FILES +=
 

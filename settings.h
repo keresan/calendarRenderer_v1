@@ -26,6 +26,8 @@ public:
 	static QString tagUtvarCislo;
 	static QString tagZamokStav;
 	static QString tagKurzVolitelnyText;
+	static QString tagOptPridaneSkolenie;
+	static QString tagOptZruseneSkolenie;
 
 	static QString tagOptPracAktivita;
 	static QString tagOptSoftskill;
@@ -42,6 +44,8 @@ public:
 	static bool generateEvent,generateSoftskill, generateRoom, generateInstructor;
 
 	static float widthEventTitle;
+
+	static QString calendarVersion;
 };
 
 #endif // SETTINGS_H

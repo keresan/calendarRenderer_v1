@@ -34,7 +34,7 @@ void CrCalendar::loadDataFromXml(QString path) {
     readXmlFile(path);
 
     _calendarData.sortCompressedList(_calendarData._listOfEvents);
-    _calendarData.sortCompressedList(_calendarData._listOfEventsAfterDeadline);
+	_calendarData.sortCompressedList(_calendarData._listOfEventsAdded);
 
 }
 
@@ -95,10 +95,12 @@ bool CrCalendar::readXmlFile(QString path) {
 
     QDomNodeList eventList = rootElement.childNodes();
     QList<CrEvent> listEvents;
-    QList<CrEvent> listEventsAfterDeadline;
+	QList<CrEvent> listEventsAdded;
+	QList<CrEvent> listEventsCancelled;
     QList<CrEvent> listWorkAction;
 	QList<CrEvent> listEventsSoftskill;
-	QList<CrEvent> listEventsSoftskillAfterDeadline;
+	QList<CrEvent> listEventsSoftskillAdded;
+	QList<CrEvent> listEventsSoftskillCancelled;
 
     emit signalInfoMsg("zaciatok nacitania dat z xml suboru");
 
@@ -233,8 +235,12 @@ bool CrCalendar::readXmlFile(QString path) {
         //bool afterDeadline = false;
         CalendarData::Deadline deadline = CalendarData::before;
         if(!deadlineStr.isEmpty()) {
-            if(deadlineStr.compare("po_zamknuti",Qt::CaseInsensitive) == 0) {
-                deadline = CalendarData::after;
+			if(deadlineStr.compare(Settings::tagOptPridaneSkolenie,Qt::CaseInsensitive) == 0) {
+				//pridane po uzamknuti
+				deadline = CalendarData::added;
+			} else if(deadlineStr.compare(Settings::tagOptZruseneSkolenie,Qt::CaseInsensitive) == 0) {
+				//odstanene po uzamknuti
+				deadline = CalendarData::cancelled;
 			}
         }
 
@@ -275,18 +281,24 @@ bool CrCalendar::readXmlFile(QString path) {
         } else {
 			//obycajne udalosti
 			if(eventType == CrEvent::Course && Settings::generateEvent) {
-				if(deadline == CalendarData::after) {
+				if(deadline == CalendarData::added) {
 					// udalost s priznakom, ze bola pridana az po uzamknuti planu
-					list = &listEventsAfterDeadline;
+					list = &listEventsAdded;
+				} else if(deadline == CalendarData::cancelled) {
+					// udalost s priznakom, ze bola zrusena az po uzamknuti planu
+					list = &listEventsCancelled;
 				} else {
 					list = &listEvents;
 				}
 			//soft skills
 			} else if(eventType == CrEvent::softskill && Settings::generateSoftskill) {
-				if(deadline == CalendarData::after) {
+				if(deadline == CalendarData::added) {
 					// softskill s priznakom, ze bola pridana az po uzamknuti planu
-					list = &listEventsSoftskillAfterDeadline;
-				} else {
+					list = &listEventsSoftskillAdded;
+				} else if(deadline == CalendarData::cancelled) {
+					// softskill s priznakom, ze bola zrusena az po uzamknuti planu
+					list = &listEventsSoftskillCancelled;
+				}else {
 					list = &listEventsSoftskill;
 				}
 			} else {
@@ -334,14 +346,17 @@ bool CrCalendar::readXmlFile(QString path) {
     //sortList(listWorkAction);
 
     _calendarData._listOfEvents = CalendarData::createCompressedEventList(listEvents);
-    _calendarData._listOfEventsAfterDeadline = CalendarData::createCompressedEventList(listEventsAfterDeadline);
+	_calendarData._listOfEventsAdded = CalendarData::createCompressedEventList(listEventsAdded);
+	_calendarData._listOfEventsCancelled = CalendarData::createCompressedEventList(listEventsCancelled);
+
 	_calendarData._listOfSoftskill = CalendarData::createCompressedEventList(listEventsSoftskill);
-	_calendarData._listOfSoftskillAfterDeadline = CalendarData::createCompressedEventList(listEventsSoftskillAfterDeadline);
+	_calendarData._listOfSoftskillAdded = CalendarData::createCompressedEventList(listEventsSoftskillAdded);
+	_calendarData._listOfSoftskillCancelled = CalendarData::createCompressedEventList(listEventsSoftskillCancelled);
 
 	_calendarData.createCompressedWorkActivityList(listWorkAction);
 
-	qDebug() << "list of work actions:";
-	_calendarData.printCompressedList(_calendarData._listOfWorkAction);
+	//qDebug() << "list of work actions:";
+	//_calendarData.printCompressedList(_calendarData._listOfWorkAction);
 
     return result;
 
@@ -413,8 +428,16 @@ void CrCalendar::generateCalendar() {
 	 _eventCounter = 1;
 	//add events
 	if(Settings::generateEvent) {
-		_html += generateEvents(_calendarData._listOfEvents, Settings::eventLabel,true);
-		_html += generateEventsAfterDeadline(_calendarData._listOfEventsAfterDeadline, Settings::eventAfterDeadlineLabel);
+		_html += generateEvents(_calendarData._listOfEvents, Settings::eventLabel, true);
+
+		QString kpiStr = getKPI(_calendarData._listOfEvents,
+								_calendarData._listOfEventsAdded,
+								_calendarData._listOfEventsCancelled);
+
+		_html += generateEventsAfterDeadline(_calendarData._listOfEventsAdded,
+											 _calendarData._listOfEventsCancelled,
+											 Settings::eventAfterDeadlineLabel,
+											 kpiStr);
 	}
 	//add soft skills
 	if(Settings::generateSoftskill) {
@@ -423,7 +446,15 @@ void CrCalendar::generateCalendar() {
 			showHeadTitle = true;
 		}
 		_html += generateEvents(_calendarData._listOfSoftskill, Settings::softSkillLabel, showHeadTitle);
-		_html += generateEventsAfterDeadline(_calendarData._listOfSoftskillAfterDeadline, Settings::softSkillAfterDeadlineLabel);
+
+		QString kpiStr = getKPI(_calendarData._listOfSoftskill,
+								_calendarData._listOfSoftskillAdded,
+								_calendarData._listOfSoftskillCancelled);
+
+		_html += generateEventsAfterDeadline(_calendarData._listOfSoftskillAdded,
+											 _calendarData._listOfSoftskillCancelled,
+											 Settings::softSkillAfterDeadlineLabel,
+											 kpiStr);
 	}
 
 	if(Settings::generateRoom) {
@@ -602,8 +633,9 @@ QString CrCalendar::generateEvents(listOfListOfEvents &list, QString title, bool
 
 
 	//event title
-	str += "<td colspan=\"2\" class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">" +title+ "</td>";
-    str += "<td colspan=\" "+ QString::number(_dateFirst.daysTo(_dateLast)+1) +"\"></td>";
+	str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">" +title+ "</td>";
+	str += "<td></td>";
+	str += "<td colspan=\" "+ QString::number(_dateFirst.daysTo(_dateLast)+1) +"\"></td>";
     str += "</tr>";
 
 	if(list.isEmpty()) {
@@ -626,46 +658,50 @@ QString CrCalendar::generateEvents(listOfListOfEvents &list, QString title, bool
     return str;
 
 }
-QString CrCalendar::generateEventsAfterDeadline(listOfListOfEvents &list, QString title) {
+QString CrCalendar::generateEventsAfterDeadline(listOfListOfEvents &added, listOfListOfEvents &cancelled, QString title, QString kpi) {
 
     QString str;
 
     str += "<tr>";
-    //serial numeber
-    str += "<td></td>";
-    //department
-    str += "<td></td>";
+	//kpi
+	str += "<td colspan=\"2\">";
+	//str += kpi;
+	str += "</td>";
+
 
     //event title
 	str += "<td class=\""+Cell::getCssClassAsString(Cell::group_title)+"\">" +title+ "</td>";
     //color
     str += "<td></td>";
     //line
-    str += generateEmptyLine();
+	str += "<td colspan=\" "+ QString::number(_dateFirst.daysTo(_dateLast)+1) +"\">";
+	str += kpi;
+	str += "</td>";
     str += "</tr>";
 
-	if(list.isEmpty()) {
+	if(added.isEmpty()) {
         str += "<tr class=\"" +Cell::getCssClassAsString(Cell::tr_end)+ "\">";;
         //serial number
-        str += "<td></td>";
+		str += "<td>&nbsp</td>";
         //department
-        str += "<td></td>";
+		str += "<td>&nbsp</td>";
         //event title
-        str += "<td></td>";
+		str += "<td>&nbsp</td>";
         //color
-        str += "<td></td>";
+		str += "<td>&nbsp</td>";
         //line
         str += generateEmptyLine();
         str += "</tr>";
     } else {
 
-		str += generateEventsFromList(list, true);
+		str += generateEventsFromList(added, false);
+		str += generateEventsFromList(cancelled, true, true); //highlight last tr and striken cancelled events
     }
     return str;
 }
 
 
-QString CrCalendar::generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr) {
+QString CrCalendar::generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr, bool StrikenTitle) {
 
     QString str;
     listOfListOfEvents::iterator listOfListIterator;
@@ -678,6 +714,7 @@ QString CrCalendar::generateEventsFromList(listOfListOfEvents &list, bool highli
         if(_eventCounter % 3 == 0) {
             cell.addCssClass(Cell::tr_highlight);
         }
+
 
         if(listOfListIterator == --list.end()) {
             if(highlightEndTr) {
@@ -697,7 +734,13 @@ QString CrCalendar::generateEventsFromList(listOfListOfEvents &list, bool highli
         str += "<td class=\""+Cell::getCssClassAsString(Cell::department_number)+"\">"+ listOfListIterator->first().department() +"</td>";
 
         //add event title
-        str += "<td><div class=\""+Cell::getCssClassAsString(Cell::event_title)+"\">";
+		Cell titleCell;
+		titleCell.addCssClass(Cell::event_title);
+		if(StrikenTitle) {
+			titleCell.addCssClass(Cell::canceled_event);
+		}
+		str += "<td><div ";
+		str += titleCell.getCssClasses() +"\">";
         str += listOfListIterator->first().title();
         str += "</div></td>\n";
 
@@ -868,8 +911,14 @@ QString CrCalendar::generateRooms(CalendarData::RoomOrInstructor what) {
              } else {
                  str += cellBody.getCssClasses();
              }
-             str += " >";
-             str += "</td>\n";
+			 str += " >";
+
+			 /*
+			 if(cellBody.isClass(Cell::event_day)) {
+				str += "x";
+			 }
+			*/
+			 str += "</td>\n";
          }
          str += "</tr>\n";
 
@@ -972,9 +1021,11 @@ QString CrCalendar::getListOfClassAndColors() {
     QString str;
 	int counter = 1;
 	str += getListOfClassAndColorsFromList(_calendarData._listOfEvents, counter);
-	str += getListOfClassAndColorsFromList(_calendarData._listOfEventsAfterDeadline,counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfEventsAdded,counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfEventsCancelled,counter);
 	str += getListOfClassAndColorsFromList(_calendarData._listOfSoftskill, counter);
-	str += getListOfClassAndColorsFromList(_calendarData._listOfSoftskillAfterDeadline,counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfSoftskillAdded,counter);
+	str += getListOfClassAndColorsFromList(_calendarData._listOfSoftskillCancelled,counter);
 
 	return str;
 }
@@ -1001,7 +1052,29 @@ QString CrCalendar::getListOfClassAndColorsOfWorkActivity() {
     return returnStr;
 }
 
+QString CrCalendar::getKPI(listOfListOfEvents &beforeLock, listOfListOfEvents &afterLockAdded, listOfListOfEvents &afterLockCancelled) {
 
+
+	//int numerator = afterLock.size();
+	//int denominator =  beforeLock.size() + afterLock.size();
+	int numerator = CalendarData::getEventsCount(afterLockAdded) + CalendarData::getEventsCount(afterLockCancelled);
+	int denominator =  numerator + CalendarData::getEventsCount(beforeLock);
+
+	float kpi;
+	if(denominator == 0) {
+		kpi = 0;
+	} else {
+		kpi = numerator / (double)denominator;
+		kpi = kpi * 100;
+	}
+
+	QString kpiStr = QString::number(kpi,'f',1);
+	kpiStr = kpiStr.replace('.',',');
+	kpiStr = "KPI = " + kpiStr + "%";
+	kpiStr += " (" + QString::number(numerator) + "/" + QString::number(denominator) + ")";
+
+	return kpiStr;
+}
 
 
 

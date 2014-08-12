@@ -11,7 +11,7 @@ TagDescriptor::TagDescriptor(QStringList &captions) {
 	this->verticalHeader()->hide();
 
 
-	this->setFont(QFont("Verdana",12));
+	this->setFont(QFont("Verdana"));
 }
 
 

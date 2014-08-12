@@ -1057,8 +1057,8 @@ QString CrCalendar::getKPI(listOfListOfEvents &beforeLock, listOfListOfEvents &a
 
 	//int numerator = afterLock.size();
 	//int denominator =  beforeLock.size() + afterLock.size();
-	int numerator = CalendarData::getEventsCount(afterLockAdded) + CalendarData::getEventsCount(afterLockCancelled);
-	int denominator =  numerator + CalendarData::getEventsCount(beforeLock);
+	int numerator = CalendarData::getEventsCount(beforeLock);
+	int denominator =  numerator + CalendarData::getEventsCount(afterLockAdded) + CalendarData::getEventsCount(afterLockCancelled);
 
 	float kpi;
 	if(denominator == 0) {

@@ -370,7 +370,6 @@ void MainWindow::showWebPageHandler() {
 	bool result = false;
 	QUrl url = QUrl::fromLocalFile(_saveHtmlFilePath);
 	result = QDesktopServices::openUrl(url);
-	qDebug() << _saveHtmlFilePath;
 	qDebug() << url.toString();
 	/*
 	if(result) {

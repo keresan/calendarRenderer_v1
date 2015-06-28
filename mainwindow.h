@@ -69,15 +69,15 @@ private:
     QLabel *_labQuart;
 
     QPushButton *_btnOpenFile, *_btnSaveFile, *_btnError, *_btnColor;
-	QPushButton *_btnShowWebPage;
+    QPushButton *_btnShowWebPage;
     QGroupBox *_boxExport, *_boxTitle, *_boxDate, *_boxWidth;
-	QCheckBox *_checkEvent, *_checkRoom, *_checkInstructor, *_checkTitleDate;
+    QCheckBox *_checkEvent, *_checkRoom, *_checkInstructor, *_checkTitleDate;
 
-	QLineEdit *_lineEventLabel,*_lineEventAfterDeadlineLabel, *_lineRoomLabel, *_lineInstructorLabel;
+    QLineEdit *_lineEventLabel,*_lineEventAfterDeadlineLabel, *_lineRoomLabel, *_lineInstructorLabel;
 
-	//soft skills
-	QLineEdit *_lineSoftskillLabel,*_lineSoftskillAfterDeadlineLabel;
-	QCheckBox *_checkSoftskill;
+    //soft skills
+    QLineEdit *_lineSoftskillLabel,*_lineSoftskillAfterDeadlineLabel;
+    QCheckBox *_checkSoftskill;
     QCheckBox *_checkWidth;
 
 
@@ -98,13 +98,13 @@ private:
     CustomTabWidget *_tab;
     QStringList _tableLabels;
 
-	QString _saveHtmlFilePath;
+    QString _saveHtmlFilePath;
 
     void initDock();
-	
-	void setExportCheckboxiesEnable(bool state);
 
-	
+    void setSaveBtnsEnable(bool state);
+
+
     void initTable();
 
     void initCalendar();
@@ -117,13 +117,16 @@ private slots:
 public slots:
     void openHandler();
     void saveHandler();
-	void showWebPageHandler();
+    void showWebPageHandler();
     void btnErrorHandler();
     void errorMsgHandler(QString);
 
     void btnColorHandler();
     void tmpHandler(QString msg);
     void newColorHandler(QColor newColor);
+
+    void checkSoftSkillHandler(bool checked);
+    void checkEventHandler(bool checked);
 
 signals:
     void currentColor(QColor *color);

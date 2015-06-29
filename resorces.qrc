@@ -3,6 +3,5 @@
         <file>default.css</file>
         <file>colors.csv</file>
         <file>tag_desc.txt</file>
-        <file>icon.ico</file>
     </qresource>
 </RCC>

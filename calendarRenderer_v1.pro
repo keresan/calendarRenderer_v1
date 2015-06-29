@@ -10,9 +10,16 @@ QT	+= xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = calendarRenderer_v1
+TARGET = CalRend
 TEMPLATE = app
 
+macx {
+    ICON = myicon.icns
+}
+
+win32 {
+    RC_ICONS = myicon.ico
+}
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -21,7 +28,7 @@ SOURCES += main.cpp\
     cell.cpp \
     trainingroom.cpp \
     logwindow.cpp \
-	crtablewidget.cpp \
+        crtablewidget.cpp \
     calendardata.cpp \
     customtabwidget.cpp \
     colordialog.cpp \

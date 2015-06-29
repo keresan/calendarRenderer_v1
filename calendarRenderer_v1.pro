@@ -13,6 +13,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = CalRend
 TEMPLATE = app
 
+VERSION = 2014.06.28
+
 macx {
     ICON = myicon.icns
 }

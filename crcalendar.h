@@ -23,9 +23,6 @@ class CrCalendar : public QObject {
 public:
     explicit CrCalendar(QDate first, QDate last, QObject *parent = 0);
 
-
-
-
     //load
     void loadDataFromXml(QString path);
     bool readXmlFile(QString path);
@@ -41,15 +38,15 @@ QString loadTagValue(QString tagName, QDomNode *parent);
     void setDates(QDate first, QDate last);
 
     //generate calendar
-	void generateCalendar();
+    void generateCalendar();
     QString generateMonthTitle();
     QString generateDayNumber();
-	QString generateEvents(listOfListOfEvents &list, QString title, bool showHeadTitle);
-	QString generateEventsAfterDeadline(listOfListOfEvents &added, listOfListOfEvents &cancelled, QString title, QString kpi);
-	QString generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr, bool StrikenTitle = false);
+    QString generateEvents(listOfListOfEvents &list, QString title, bool showHeadTitle);
+    QString generateEventsAfterDeadline(listOfListOfEvents &added, listOfListOfEvents &cancelled, QString title, QString kpi);
+    QString generateEventsFromList(listOfListOfEvents &list, bool highlightEndTr, bool StrikenTitle = false);
     QString generateEventLine(QList<CrEvent> &list, QString className);
     QString generateEmptyLine();
-	QString generateRooms(CalendarData::RoomOrInstructor what);
+    QString generateRooms(CalendarData::RoomOrInstructor what);
     QString generateWorkActivity();
 
     QString getHtml();
@@ -59,13 +56,13 @@ QString loadTagValue(QString tagName, QDomNode *parent);
 
     //static listOfListOfEvents _compressedListOfEvents;
 
-	QString getListOfClassAndColorsFromList(listOfListOfEvents &list, int &counter);
+    QString getListOfClassAndColorsFromList(listOfListOfEvents &list, int &counter);
     QString getListOfClassAndColors();
     QString getClassNameOfRow(int index);
 
     QString getListOfClassAndColorsOfWorkActivity();
 
-	QString getKPI(listOfListOfEvents &beforeLock, listOfListOfEvents &afterLockAdded, listOfListOfEvents &afterLockCancelled);
+    QString getKPI(listOfListOfEvents &beforeLock, listOfListOfEvents &afterLockAdded, listOfListOfEvents &afterLockCancelled);
 
 signals:
     void signalErrorMsg(QString smg);

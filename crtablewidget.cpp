@@ -16,8 +16,6 @@ CrTableWidget::CrTableWidget(QStringList &captions, QWidget *parent): QTableWidg
 
     this->setFont(QFont("Verdana"));
 
-
-
 }
 
 /*

@@ -13,7 +13,6 @@ class LogWindow : public QWidget
 public:
     explicit LogWindow(QWidget *parent = 0);
 
-
 signals:
 
 public slots:

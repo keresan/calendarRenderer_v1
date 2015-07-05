@@ -11,7 +11,6 @@ listOfListOfEvents CalendarData::_listOfSoftskillCancelled;
 trainingRoomMap CalendarData::_trainingInstructor;
 trainingRoomMap CalendarData::_trainingRooms;
 
-
 CalendarData::CalendarData() {
 
 }
@@ -19,12 +18,12 @@ CalendarData::CalendarData() {
 void CalendarData::clearData() {
     _listOfWorkAction.clear();
     _listOfEvents.clear();
-	_listOfEventsAdded.clear();
-	_listOfEventsCancelled.clear();
-	_listOfSoftskill.clear();
-	_listOfSoftskillAdded.clear();
-	_listOfSoftskillCancelled.clear();
-	_trainingInstructor.clear();
+    _listOfEventsAdded.clear();
+    _listOfEventsCancelled.clear();
+    _listOfSoftskill.clear();
+    _listOfSoftskillAdded.clear();
+    _listOfSoftskillCancelled.clear();
+    _trainingInstructor.clear();
     _trainingRooms.clear();
 
 }
@@ -97,19 +96,19 @@ listOfListOfEvents CalendarData::createCompressedEventList(QList<CrEvent> &list)
     //sort it
     sortList(list);
 
-	//print list
-	qDebug() << "--next list:";
-	printList(list);
+    //print list
+    qDebug() << "--next list:";
+    printList(list);
 
     //create compressed list
     int actualTitleId = list.first().titleId();
-	QString actualOptionalText = list.first().optionalText();
+    QString actualOptionalText = list.first().optionalText();
 
     QList<CrEvent>::iterator eventIterator;
     for(eventIterator = list.begin(); eventIterator != list.end(); ++eventIterator) {
 
-		if(eventIterator->titleId() == actualTitleId
-				&& eventIterator->optionalText() == actualOptionalText) {
+        if(eventIterator->titleId() == actualTitleId
+                && eventIterator->optionalText() == actualOptionalText) {
 
             add(eventIterator.operator *(), actualList);
 
@@ -123,7 +122,7 @@ listOfListOfEvents CalendarData::createCompressedEventList(QList<CrEvent> &list)
         } else {
 
             actualTitleId = eventIterator->titleId();
-			actualOptionalText = eventIterator->optionalText();
+            actualOptionalText = eventIterator->optionalText();
             finalList.append(actualList);
             actualList.clear();
             eventIterator--;
@@ -141,19 +140,19 @@ listOfListOfEvents CalendarData::createCompressedEventList(QList<CrEvent> &list)
  * @return
  */
 void CalendarData::createCompressedWorkActivityList(QList<CrEvent> &list) {
-	/*
-	qDebug() << "unsorted list:";
-	for(int i=0; i < list.count(); i++) {
-		qDebug("%20s %6d %10s  %10s",
-			   list[i].title().toStdString().c_str(),
-			   list[i].titleId(),
-			   list[i].dateBegin().toString("dd.MMM").toStdString().c_str(),
-			   list[i].dateEnd().toString("dd.MMM").toStdString().c_str());
-	}
-	*/
+    /*
+    qDebug() << "unsorted list:";
+    for(int i=0; i < list.count(); i++) {
+        qDebug("%20s %6d %10s  %10s",
+               list[i].title().toStdString().c_str(),
+               list[i].titleId(),
+               list[i].dateBegin().toString("dd.MMM").toStdString().c_str(),
+               list[i].dateEnd().toString("dd.MMM").toStdString().c_str());
+    }
+    */
 
     //sort it
-	sortList(list,true);
+    sortList(list,true);
 
     //create compressed list
     QList<CrEvent>::iterator eventIterator;
@@ -168,11 +167,11 @@ void CalendarData::createCompressedWorkActivityList(QList<CrEvent> &list) {
  ***********************************************/
 
 void CalendarData::sortList(QList<CrEvent> &list, bool sortOnlyByDate) {
-	if(sortOnlyByDate) {
-		qSort(list.begin(), list.end(), CrEvent::lessThenDateBegin);
-	} else {
-		qSort(list.begin(), list.end(), CrEvent::lessThanCourseType);
-	}
+    if(sortOnlyByDate) {
+        qSort(list.begin(), list.end(), CrEvent::lessThenDateBegin);
+    } else {
+        qSort(list.begin(), list.end(), CrEvent::lessThanCourseType);
+    }
 }
 
 
@@ -182,16 +181,16 @@ void CalendarData::sortCompressedList(listOfListOfEvents &list) {
 
 bool CalendarData::LessThanDate(QList<CrEvent> &list1, QList<CrEvent> &list2) {
 
-	//podla typu udalosti
-	if(list1.first().eventType() < list2.first().eventType()) {
-		//skorsi datum bude skor
+    //podla typu udalosti
+    if(list1.first().eventType() < list2.first().eventType()) {
+        //skorsi datum bude skor
         return true;
     }
 
-	//podla optional textu
-	if(list1.first().eventType() == list2.first().eventType()) {
-		return list1.first().dateBegin() < list2.first().dateBegin();
-	}
+    //podla optional textu
+    if(list1.first().eventType() == list2.first().eventType()) {
+        return list1.first().dateBegin() < list2.first().dateBegin();
+    }
     return false;
 }
 
@@ -206,32 +205,32 @@ void CalendarData::printCompressedList() {
 
     for(listOfListIterator = _listOfEvents.begin(); listOfListIterator != _listOfEvents.end(); ++listOfListIterator) {
         for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
-			qDebug("%20s %6d %10s  %10s", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str());
+            qDebug("%20s %6d %10s  %10s", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str());
         }
         qDebug("-next:");
     }
 }
 
 void CalendarData::printCompressedList(listOfListOfEvents &list) {
-	listOfListOfEvents::iterator listOfListIterator;
-	QList<CrEvent>::iterator eventIterator;
+    listOfListOfEvents::iterator listOfListIterator;
+    QList<CrEvent>::iterator eventIterator;
 
-	for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
-		for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
-			qDebug("%20s %6d %10s  %10s", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str());
-		}
-		qDebug("-next:");
-	}
+    for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
+        for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
+            qDebug("%20s %6d %10s  %10s", eventIterator->title().toStdString().c_str(),eventIterator->titleId(), eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(), eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str());
+        }
+        qDebug("-next:");
+    }
 }
 
 void CalendarData::printRoom(int id) {
     if(_trainingRooms.contains(id)) {
         TrainingRoom room = _trainingRooms.operator [](id);
-		QList<QPair<QDate, int> > dateList =  room.occupiedDays();
+        QList<QPair<QDate, int> > dateList =  room.occupiedDays();
 
         qDebug() << room.title();
-		for(int i = 0; i < dateList.size(); i++) {
-			qDebug() << dateList.at(i).first.toString("dd.MMM.yyyy");
+        for(int i = 0; i < dateList.size(); i++) {
+            qDebug() << dateList.at(i).first.toString("dd.MMM.yyyy");
         }
     } else {
         qDebug() << "ERROR: CrCalendar::printRoom() id=" << id << "not found";
@@ -240,15 +239,15 @@ void CalendarData::printRoom(int id) {
 }
 
 void CalendarData::printList(QList<CrEvent> &list) {
-	QList<CrEvent>::iterator eventIterator;
-	for(eventIterator = list.begin(); eventIterator != list.end(); ++eventIterator) {
-		qDebug("%20s %6d %10s %10s %10s",
-			   eventIterator->title().toStdString().c_str(),
-			   eventIterator->titleId(),
-			   eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(),
-			   eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str(),
-			   eventIterator->optionalText().toStdString().c_str());
-	}
+    QList<CrEvent>::iterator eventIterator;
+    for(eventIterator = list.begin(); eventIterator != list.end(); ++eventIterator) {
+        qDebug("%20s %6d %10s %10s %10s",
+               eventIterator->title().toStdString().c_str(),
+               eventIterator->titleId(),
+               eventIterator->dateBegin().toString("dd.MMM").toStdString().c_str(),
+               eventIterator->dateEnd().toString("dd.MMM").toStdString().c_str(),
+               eventIterator->optionalText().toStdString().c_str());
+    }
 }
 
 /***********************************************
@@ -262,61 +261,61 @@ void CalendarData::printList(QList<CrEvent> &list) {
  */
 void CalendarData::getRowColor(int eventId, int &eventRow) {
 
-	int offset = 0;
-	getColorFromList(eventId, _listOfEvents, eventRow);
-	if(eventRow < 0) {
-		offset += _listOfEvents.size();
-		getColorFromList(eventId, _listOfEventsAdded, eventRow);
-		if(eventRow < 0) {
-			offset += _listOfEventsAdded.size();
-			getColorFromList(eventId, _listOfEventsCancelled, eventRow);
-			if(eventRow < 0) {
-				offset += _listOfEventsCancelled.size();
-				getColorFromList(eventId, _listOfSoftskill, eventRow);
-				if(eventRow < 0) {
-					offset += _listOfSoftskill.size();
-					getColorFromList(eventId, _listOfSoftskillAdded, eventRow);
-					if(eventRow < 0) {
-						offset += _listOfSoftskillAdded.size();
-						getColorFromList(eventId, _listOfSoftskillCancelled, eventRow);
-					}
-				}
-			}
-		}
-	}
+    int offset = 0;
+    getColorFromList(eventId, _listOfEvents, eventRow);
+    if(eventRow < 0) {
+        offset += _listOfEvents.size();
+        getColorFromList(eventId, _listOfEventsAdded, eventRow);
+        if(eventRow < 0) {
+            offset += _listOfEventsAdded.size();
+            getColorFromList(eventId, _listOfEventsCancelled, eventRow);
+            if(eventRow < 0) {
+                offset += _listOfEventsCancelled.size();
+                getColorFromList(eventId, _listOfSoftskill, eventRow);
+                if(eventRow < 0) {
+                    offset += _listOfSoftskill.size();
+                    getColorFromList(eventId, _listOfSoftskillAdded, eventRow);
+                    if(eventRow < 0) {
+                        offset += _listOfSoftskillAdded.size();
+                        getColorFromList(eventId, _listOfSoftskillCancelled, eventRow);
+                    }
+                }
+            }
+        }
+    }
 
-	// nasiel sa vhodny riadok => pripocitaj offset
-	// ak sa nenasiel, eventRow ma hodnotu -1
-	if(eventRow >= 0) {
-		eventRow += offset;
-	}
+    // nasiel sa vhodny riadok => pripocitaj offset
+    // ak sa nenasiel, eventRow ma hodnotu -1
+    if(eventRow >= 0) {
+        eventRow += offset;
+    }
 
 }
 
 void CalendarData::getColorFromList(int eventId, listOfListOfEvents &list, int &eventRow) {
 
-	for(int i = 0; i < list.size(); i++) {
-		for(int j = 0; j < list.at(i).size(); j++) {
-			if(list[i][j].eventId() == eventId) {
-				eventRow = i;
-				return;
-			}
-		}
-	}
-	eventRow = -1;
+    for(int i = 0; i < list.size(); i++) {
+        for(int j = 0; j < list.at(i).size(); j++) {
+            if(list[i][j].eventId() == eventId) {
+                eventRow = i;
+                return;
+            }
+        }
+    }
+    eventRow = -1;
 }
 
 int CalendarData::getEventsCount(listOfListOfEvents &list) {
-	int counter = 0;
-	listOfListOfEvents::iterator listOfListIterator;
-	QList<CrEvent>::iterator eventIterator;
+    int counter = 0;
+    listOfListOfEvents::iterator listOfListIterator;
+    QList<CrEvent>::iterator eventIterator;
 
-	for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
-		for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
-		counter++;
-		}
+    for(listOfListIterator = list.begin(); listOfListIterator != list.end(); ++listOfListIterator) {
+        for(eventIterator = listOfListIterator->begin(); eventIterator != listOfListIterator->end(); ++eventIterator) {
+        counter++;
+        }
 
-	}
-	return counter;
+    }
+    return counter;
 }
 

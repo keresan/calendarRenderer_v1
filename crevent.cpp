@@ -2,22 +2,22 @@
 
 
 CrEvent::CrEvent(QString courseTitle,
-				 int courseId,
-				 QDate begin,
-				 int duration,
-				 int hours,
-				 QColor colorDay,
-				 QString optionalText,
-				 QString department,
-				 int id) {
+                 int courseId,
+                 QDate begin,
+                 int duration,
+                 int hours,
+                 QColor colorDay,
+                 QString optionalText,
+                 QString department,
+                 int id) {
 
     _title = courseTitle;
     _titleId = courseId;
     _dateBegin = begin;
     _duration = duration;
     _hours = hours;
-	_colorDay = colorDay;
-	_optionalText = optionalText;
+    _colorDay = colorDay;
+    _optionalText = optionalText;
     _department = department;
     _id = id;
 
@@ -45,7 +45,7 @@ void CrEvent::setEventType(EventType type) {
 }
 
 void CrEvent::setColor(QColor color) {
-	_colorDay = color;
+    _colorDay = color;
 }
 
 QString CrEvent::getClassNameOfId() {
@@ -184,7 +184,7 @@ Qt::DayOfWeek CrEvent::convertToQtDayOfWeek(CrEvent::DayOfWeek day) {
  * @return
  */
 bool CrEvent::lessThanCourseType(CrEvent &e1, CrEvent &e2) {
-	//compare by courseType
+    //compare by courseType
     if (e1.eventType() < e2.eventType()) {
         return true;
     }
@@ -195,26 +195,26 @@ bool CrEvent::lessThanCourseType(CrEvent &e1, CrEvent &e2) {
             return true;
         }
 
-		if(e1.titleId() == e2.titleId()) {
-			int cmpResult = e1.optionalText().compare(e2.optionalText());
-			if(cmpResult < 0) {
-				//compare by optional text
-				return true;
-			} else if(cmpResult == 0) {
-				//compare by dateBegin
-				return e1.dateBegin()  < e2.dateBegin();
-			}
-		}
+        if(e1.titleId() == e2.titleId()) {
+            int cmpResult = e1.optionalText().compare(e2.optionalText());
+            if(cmpResult < 0) {
+                //compare by optional text
+                return true;
+            } else if(cmpResult == 0) {
+                //compare by dateBegin
+                return e1.dateBegin()  < e2.dateBegin();
+            }
+        }
     }
 
     return false;
 }
 
 bool CrEvent::lessThenDateBegin(CrEvent &e1, CrEvent &e2) {
-	//compare by date begin
-	if(e1.dateBegin() < e2.dateBegin()) {
-		return true;
-	} else {
-		return false;
-	}
+    //compare by date begin
+    if(e1.dateBegin() < e2.dateBegin()) {
+        return true;
+    } else {
+        return false;
+    }
 }

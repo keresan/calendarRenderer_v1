@@ -9,8 +9,8 @@ TrainingRoom::TrainingRoom(QString title, int id, QColor color) {
 }
 
 TrainingRoom::TrainingRoom(QString title, int id) {
-	_title = title;
-	_id = id;
+    _title = title;
+    _id = id;
 }
 
 /*
@@ -23,9 +23,9 @@ void TrainingRoom::addDay(QList<QDate> list) {
 }
 */
 void TrainingRoom::addDay(QList<QDate> list, int eventId) {
-	for(int i = 0; i < list.size(); i++) {
-		_occupiedDaysNew.append(qMakePair(list[i],eventId));
-	}
+    for(int i = 0; i < list.size(); i++) {
+        _occupiedDaysNew.append(qMakePair(list[i],eventId));
+    }
 }
 
 /*
@@ -46,17 +46,17 @@ QString TrainingRoom::title() {return _title;}
  * @return eventId pre dany den; -1 ak den nenajde
  */
 int TrainingRoom::eventId(QDate date) {
-	for(int i = 0; i < _occupiedDaysNew.count(); i++) {
-		if(_occupiedDaysNew.at(i).first == date ) {
-			return _occupiedDaysNew.at(i).second;
-		}
-	}
-	return -1;
+    for(int i = 0; i < _occupiedDaysNew.count(); i++) {
+        if(_occupiedDaysNew.at(i).first == date ) {
+            return _occupiedDaysNew.at(i).second;
+        }
+    }
+    return -1;
 }
 
 bool TrainingRoom::isOccupied(QDate date) {
-	for(int i = 0; i < _occupiedDaysNew.count(); i++) {
-		if(_occupiedDaysNew.at(i).first == date ) {
+    for(int i = 0; i < _occupiedDaysNew.count(); i++) {
+        if(_occupiedDaysNew.at(i).first == date ) {
             return true;
         }
     }

@@ -16,7 +16,6 @@ public:
 
     void loadData();
 
-
     QColor getCurrentRowColor();
     void setCurrentRowColor(QColor color);
 
@@ -30,21 +29,21 @@ signals:
     //void currentEvent();
 
 private:
-	CrTableWidget *_tableEvent; // *_tableRoom, *_tableInstructor;
-	TagDescriptor *_tagDescription;
+    CrTableWidget *_tableEvent; // *_tableRoom, *_tableInstructor;
+    TagDescriptor *_tagDescription;
 
 
     //load data
     void initTableEvent();
-	void initTagDescription();
+    void initTagDescription();
 
     void loadEvents();
-	void loadEventsFromList(listOfListOfEvents &list, int &counter);
+    void loadEventsFromList(listOfListOfEvents &list, int &counter);
 
     //change data
     void changeLineEventColor(listOfListOfEvents &list, int index, QColor color);
     void changeEventColor(QColor color);
-	void changeRoomColor(int index, QColor color, CalendarData::RoomOrInstructor what);
+    void changeRoomColor(int index, QColor color, CalendarData::RoomOrInstructor what);
 
 
     int mapTableRowToEventLine(int tableRow);
@@ -52,10 +51,10 @@ private:
     //konstanta, udava od ktoreho riadku v _tableEvent zacina vypisovanie udajov
     // z _listOfEventsAfterDeadline
     int _startRowEventAdded;
-	int _startRowEventCancelled;
-	int _startRowSoftSkill;
-	int _startRowSoftSkillAdded;
-	int _startRowSoftSkillCancelled;
+    int _startRowEventCancelled;
+    int _startRowSoftSkill;
+    int _startRowSoftSkillAdded;
+    int _startRowSoftSkillCancelled;
 
 
 

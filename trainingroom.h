@@ -7,7 +7,6 @@
 #include <QColor>
 #include <QMap>
 
-
 /**
  * @brief Trieda reprezentujuca miestnost skolenia alebo instruktora.
  */
@@ -16,20 +15,20 @@ public:
     TrainingRoom();
     TrainingRoom(QString title, int id, QColor color);
 
-	TrainingRoom(QString title, int id);
+    TrainingRoom(QString title, int id);
 
-	//void addDay(QDate date);
-	//void addDay(QList<QDate> list);
+    //void addDay(QDate date);
+    //void addDay(QList<QDate> list);
 
-	void addDay(QList <QDate> list, int eventId);
+    void addDay(QList <QDate> list, int eventId);
 
     int id();
-	int eventId(QDate date);
+    int eventId(QDate date);
     QString title();
-	//QColor color();
-	//void setColor(QColor color);
+    //QColor color();
+    //void setColor(QColor color);
 
-	QList<QPair<QDate, int> > occupiedDays();
+    QList<QPair<QDate, int> > occupiedDays();
 
 
     bool isOccupied(QDate date);
@@ -40,10 +39,10 @@ private:
     QColor _color;
     QList<QDate> _occupiedDays;
 
-	// list dvojic < den, id-event>
-	// podla id-event sa bude zistovat farba vypisu, ktora moze byt pre
-	// jednotlive udalosti v tej istej miestnosti rozdielna
-	QList<QPair<QDate, int> > _occupiedDaysNew;
+    // list dvojic < den, id-event>
+    // podla id-event sa bude zistovat farba vypisu, ktora moze byt pre
+    // jednotlive udalosti v tej istej miestnosti rozdielna
+    QList<QPair<QDate, int> > _occupiedDaysNew;
 
 };
 

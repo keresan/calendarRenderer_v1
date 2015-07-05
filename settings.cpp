@@ -42,38 +42,38 @@ float Settings::widthEventTitle;
 Settings::Settings() {}
 
 void Settings::setConstants() {
-	tagKurzNazov = "kurz_nazov";
-	tagKurzId = "kurz_id";
-	tagDniTrvanie = "dni_trvanie";
-	tagHodTrvanie = "hod_trvanie";
-	tagTypSkolenia = "typ_skolenia";
-	tagDatumZaciatok = "datum_zaciatok";
-	tagSkoliacaMiestnostNazov = "skoliaca_miestnost_nazov";
-	tagSkoliacaMiestnostId = "skoliaca_miestnost_id";
-	tagSkolitelNazov = "skolitel_nazov";
-	tagSkolitelId = "skolitel_id";
-	tagAktivDen = "aktiv_den";
-	tagFarbaSkolenia = "farba_skolenia";
-	tagUtvarCislo = "utvar_cislo";
-	tagZamokStav = "zamok_stav";
-	tagKurzVolitelnyText = "kurz_volitelny_text";
+    tagKurzNazov = "kurz_nazov";
+    tagKurzId = "kurz_id";
+    tagDniTrvanie = "dni_trvanie";
+    tagHodTrvanie = "hod_trvanie";
+    tagTypSkolenia = "typ_skolenia";
+    tagDatumZaciatok = "datum_zaciatok";
+    tagSkoliacaMiestnostNazov = "skoliaca_miestnost_nazov";
+    tagSkoliacaMiestnostId = "skoliaca_miestnost_id";
+    tagSkolitelNazov = "skolitel_nazov";
+    tagSkolitelId = "skolitel_id";
+    tagAktivDen = "aktiv_den";
+    tagFarbaSkolenia = "farba_skolenia";
+    tagUtvarCislo = "utvar_cislo";
+    tagZamokStav = "zamok_stav";
+    tagKurzVolitelnyText = "kurz_volitelny_text";
 
-	tagOptSoftskill = "soft_skill";
-	tagOptPracAktivita = "prac_aktivita";
-	tagOptPridaneSkolenie = "pridane_po_zamknuti";
-	tagOptZruseneSkolenie = "zrusene_po_zamknuti";
+    tagOptSoftskill = "soft_skill";
+    tagOptPracAktivita = "prac_aktivita";
+    tagOptPridaneSkolenie = "pridane_po_zamknuti";
+    tagOptZruseneSkolenie = "zrusene_po_zamknuti";
 
-	eventLabel = "Odborné školenie";
-	eventAfterDeadlineLabel = "Odborné školenie po uzamknutí";
-	roomLabel = "Miestnosť";
-	instructorLabel = "Inštruktor";
-	departmentLabel = "Útvar";
+    eventLabel = "Odborné školenie";
+    eventAfterDeadlineLabel = "Odborné školenie po uzamknutí";
+    roomLabel = "Miestnosť";
+    instructorLabel = "Inštruktor";
+    departmentLabel = "Útvar";
 
-	calendarTitleLabel = "PLÁN ŠKOLENÍ";
-	softSkillLabel = "Mäkká zručnosť (soft-skill)";
-	softSkillAfterDeadlineLabel = "Mäkká zručnosť po uzamknutí";
+    calendarTitleLabel = "PLÁN ŠKOLENÍ";
+    softSkillLabel = "Mäkká zručnosť (soft-skill)";
+    softSkillAfterDeadlineLabel = "Mäkká zručnosť po uzamknutí";
 
-	widthEventTitle = 10.0;
+    widthEventTitle = 10.0;
 
-	calendarVersion = "2014.07.24";
+    calendarVersion = "2014.07.24";
 }

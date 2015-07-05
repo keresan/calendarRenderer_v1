@@ -13,23 +13,23 @@
  */
 class CrEvent {
 public:
-	CrEvent(QString courseTitle,
-			int titleId,
-			QDate begin,
-			int duration,
-			int hours,
-			QColor colorDay,
-			QString optionalText,
-			QString department,
-			int eventId);
+    CrEvent(QString courseTitle,
+            int titleId,
+            QDate begin,
+            int duration,
+            int hours,
+            QColor colorDay,
+            QString optionalText,
+            QString department,
+            int eventId);
 
     /**
      * @brief vyuziva sa aj pri qSort
      */
     enum EventType {
         workAction = 0,
-		softskill = 1,
-		Course = 2
+        softskill = 1,
+        Course = 2
     };
 
     enum DayOfWeek {
@@ -50,18 +50,18 @@ public:
     EventType eventType();
     QString title();
     int titleId();
-	//int roomId();
+    //int roomId();
     int hours();
-	QColor colorDay();
-	QString optionalText();
+    QColor colorDay();
+    QString optionalText();
     QString department();
 
-	void setColor(QColor colorDay);
+    void setColor(QColor colorDay);
 
 
     void setEventType(EventType type);
 
-	int eventId();
+    int eventId();
     bool isOverlap(CrEvent &other);
     void calculateDateEnd();
 
@@ -75,7 +75,7 @@ public:
     CrEvent::DayOfWeek convertFromQtDayOfWeek(Qt::DayOfWeek day);
 
     static bool lessThanCourseType(CrEvent &e1, CrEvent &e2);
-	static bool lessThenDateBegin(CrEvent &e1, CrEvent &e2);
+    static bool lessThenDateBegin(CrEvent &e1, CrEvent &e2);
 
     QList<QDate> getEventDays();
     QString getClassNameOfId();
@@ -84,14 +84,14 @@ private:
     QDate _dateBegin;
     QDate _dateEnd; //pre zistenie, ci sa 2 udalosti casovo prekryvaju
     int _duration;
-	int _hours; //trvanie v hodinach, dolezite, ak event trva 1 den a menej ako 8h
-	int _id;
-	QString _title;
+    int _hours; //trvanie v hodinach, dolezite, ak event trva 1 den a menej ako 8h
+    int _id;
+    QString _title;
     int _titleId;
-	QString _optionalText;
+    QString _optionalText;
 
-	QColor _colorDay; //farba pre vykreslenie udalosti v kalendary
-	QString _department; //utvar
+    QColor _colorDay; //farba pre vykreslenie udalosti v kalendary
+    QString _department; //utvar
 
 
     EventType _eventType;

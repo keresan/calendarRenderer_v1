@@ -24,8 +24,8 @@ public:
         group_title,
         workActivity_cell,
         event_serial_number,
-		department_number,
-		canceled_event
+        department_number,
+        canceled_event
     };
 
     void addCssClass(Cell::cssClassName name);

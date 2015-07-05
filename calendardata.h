@@ -57,9 +57,6 @@ private:
     static void sortList(QList<CrEvent> &list, bool sortOnlyByDate = false);
     static bool LessThanDate(QList<CrEvent> &list1, QList<CrEvent> &list2);
 
-
 };
-
-
 
 #endif // CALENDARDATA_H

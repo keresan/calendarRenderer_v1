@@ -293,7 +293,8 @@ void MainWindow::openHandler() {
 
 
     //QString xmlFilePath = QFileDialog::getOpenFileName(this,"open xml file",QString(),"xml file(*.xml)");
-     QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/problem1/?Q?Q3=5Fstav_k_1=5F4=5F2014.xml";
+    QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/problem3/Dotaz_EBO_Plan VA_pre_2015_Q1 vyrobz1Q2014.xml";
+     //QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/problem1/?Q?Q3=5Fstav_k_1=5F4=5F2014.xml";
     //QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/EBO_2Q2014_D1_vypis_vsetky_skolenia.xml";
     //QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/Dotaz_Vyber_2014_Q2+ZAMOK zamknuty.xml";
     //QString xmlFilePath = "/Users/martin/Documents/[]sklad/calendar renderer data/3_EMO1a2Q2014_D1_vypis_vsetky_skolenia.xml";

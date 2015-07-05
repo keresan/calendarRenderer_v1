@@ -9,10 +9,9 @@
 class TagDescriptor : public QTableWidget
 {
 public:
-	TagDescriptor(QStringList &captions);
-	void loadData();
+    TagDescriptor(QStringList &captions);
+    void loadData();
 private:
-
 
 };
 

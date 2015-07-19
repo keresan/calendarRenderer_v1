@@ -75,5 +75,5 @@ void Settings::setConstants() {
 
     widthEventTitle = 10.0;
 
-    calendarVersion = "2014.07.24";
+    calendarVersion = "2015.07.18";
 }

@@ -213,7 +213,6 @@ void MainWindow::initDock() {
     _gridLayout->setColumnStretch(0,5);
     _gridLayout->setColumnStretch(1,5);
 
-
     _optionMenu = new QWidget();
     _optionMenu->setLayout(_gridLayout);
 

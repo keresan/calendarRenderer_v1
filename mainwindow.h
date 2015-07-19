@@ -64,13 +64,13 @@ private:
     QWidget *_optionMenu;
     QDockWidget *_dockWidget;
 
-    QGridLayout *_gridLayout, *_gridLayoutOption, *_gridLayoutTitle, *_gridLayoutDate, *_gridLayoutWidth;
+    QGridLayout *_gridLayout, *_gridLayoutOption, *_gridLayoutExport, *_gridLayoutTitle, *_gridLayoutDate, *_gridLayoutWidth;
 
     QLabel *_labQuart;
 
     QPushButton *_btnOpenFile, *_btnSaveFile, *_btnError, *_btnColor;
     QPushButton *_btnShowWebPage;
-    QGroupBox *_boxExport, *_boxTitle, *_boxDate, *_boxWidth;
+    QGroupBox *_boxImport, *_boxTitle, *_boxDate, *_boxWidth, *_boxExport;
     QCheckBox *_checkEvent, *_checkRoom, *_checkInstructor, *_checkTitleDate;
 
     QLineEdit *_lineEventLabel,*_lineEventAfterDeadlineLabel, *_lineRoomLabel, *_lineInstructorLabel;

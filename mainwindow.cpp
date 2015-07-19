@@ -161,7 +161,7 @@ void MainWindow::initDock() {
     _lineInstructorLabel->setCursorPosition(0);
 
 
-    _boxExport = new QGroupBox("export",this);
+    _boxImport = new QGroupBox("import",this);
 
     _gridLayoutOption = new QGridLayout;
     _gridLayoutOption->addWidget(_checkEvent,0,0);
@@ -172,11 +172,21 @@ void MainWindow::initDock() {
     _gridLayoutOption->addWidget(_lineSoftskillLabel,2,1);
     _gridLayoutOption->addWidget(_lineSoftskillAfterDeadlineLabel,3,1);
 
-    _gridLayoutOption->addWidget(_checkRoom,4,0);
-    _gridLayoutOption->addWidget(_lineRoomLabel,4,1);
-    _gridLayoutOption->addWidget(_checkInstructor,5,0);
-    _gridLayoutOption->addWidget(_lineInstructorLabel,5,1);
-    _boxExport->setLayout(_gridLayoutOption);
+    _gridLayoutOption->addWidget(_btnOpenFile,4,1);
+
+    _boxImport->setLayout(_gridLayoutOption);
+
+    _boxExport = new QGroupBox("export",this);
+
+    _gridLayoutExport = new QGridLayout;
+    _gridLayoutExport->addWidget(_checkRoom,0,0);
+    _gridLayoutExport->addWidget(_lineRoomLabel,0,1);
+    _gridLayoutExport->addWidget(_checkInstructor,1,0);
+    _gridLayoutExport->addWidget(_lineInstructorLabel,1,1);
+    _gridLayoutExport->addWidget(_btnSaveFile,2,1);
+    _gridLayoutExport->addWidget(_btnShowWebPage,3,1);
+
+    _boxExport->setLayout(_gridLayoutExport);
 
     //space
     _space = new QSpacerItem(5,5,QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -186,21 +196,18 @@ void MainWindow::initDock() {
 
     _gridLayout->addWidget(_labTitle,0,0,1,2);
 
-    _gridLayout->addWidget(_boxExport,1,0,6,2);
+    _gridLayout->addWidget(_boxImport,1,0,6,2);
 
-    _gridLayout->addWidget(_btnOpenFile,7,0,1,2);
-    _gridLayout->addWidget(_boxDate,8,0,2,2);
+    _gridLayout->addWidget(_boxDate,7,0,2,2);
 
-    _gridLayout->addWidget(_boxTitle,10,0,2,2);
+    _gridLayout->addWidget(_boxTitle,9,0,2,2);
 
-    _gridLayout->addWidget(_boxWidth,12,0,1,2);
+    _gridLayout->addWidget(_boxWidth,11,0,1,2);
 
-    _gridLayout->addWidget(_btnColor,13,0);
-    _gridLayout->addWidget(_btnError,13,1);
+    _gridLayout->addWidget(_btnColor,12,0);
+    _gridLayout->addWidget(_btnError,12,1);
 
-    _gridLayout->addWidget(_btnSaveFile,14,0,1,2);
-
-    _gridLayout->addWidget(_btnShowWebPage,15,0,1,2);
+    _gridLayout->addWidget(_boxExport,13,0,1,2);
 
     _gridLayout->addItem(_space,16,1,1,2);
     _gridLayout->setColumnStretch(0,5);

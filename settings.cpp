@@ -73,7 +73,7 @@ void Settings::setConstants() {
     softSkillLabel = "Mäkká zručnosť (soft-skill)";
     softSkillAfterDeadlineLabel = "Mäkká zručnosť po uzamknutí";
 
-    widthEventTitle = 10.0;
+    widthEventTitle = 15.0;
 
     calendarVersion = "2015.07.18";
 }
